@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lipari — Szkoła Sali</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,600&family=Manrope:wght@500;600;700;800&display=swap');
+
+  :root{
+    --ink:#1C1B17;
+    --cream:#F7F3EA;
+    --wine:#7A2631;
+    --wine-dark:#5A1B23;
+    --gold:#C9A94F;
+    --basil:#4A5D3A;
+    --card:#FFFDF8;
+    --line: rgba(28,27,23,0.12);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(201,169,79,0.10), transparent 40%),
+      radial-gradient(circle at 85% 92%, rgba(122,38,49,0.20), transparent 45%);
+    min-height:100vh;
+    font-family:'Manrope', sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding: 0;
+  }
+  #app{
+    width:100%;
+    max-width:480px;
+    min-height:100vh;
+    background:var(--cream);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    box-shadow: 0 0 60px rgba(0,0,0,0.35);
+  }
+
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    margin:0;
+    line-height:1.05;
+  }
+
+  /* ---------- HEADER ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:1.15rem;
+    letter-spacing:0.01em;
+    color:var(--wine);
+  }
+  .brand span{ color: var(--ink); font-weight:600; font-size:0.7rem; display:block; letter-spacing:0.08em; margin-top:2px;}
+  .streak{
+    font-size:0.78rem;
+    font-weight:700;
+    background: var(--ink);
+    color: var(--cream);
+    padding:6px 12px;
+    border-radius:100px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  /* ---------- SCREENS ---------- */
+  .screen{ flex:1; display:flex; flex-direction:column; padding: 24px 22px 32px; }
+  .hidden{ display:none !important; }
+
+  /* HOME */
+  .hero-line{
+    width:46px; height:4px; background:var(--gold); border-radius:4px; margin-bottom:18px;
+  }
+  .home h1{ font-size:2.1rem; font-weight:700; color:var(--ink); }
+  .home h1 em{ font-style:normal; color:var(--wine); }
+  .home p.lead{
+    margin:14px 0 28px; font-size:0.98rem; line-height:1.5; color:#4b473f; max-width:38ch;
+  }
+
+  .module-list{ display:flex; flex-direction:column; gap:12px; margin-bottom: 20px;}
+  .module-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    cursor:pointer;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .module-card:active{ transform: scale(0.98); }
+  .module-card.done{ border-color: var(--basil); background: #FBFAF3;}
+  .module-icon{
+    width:44px;height:44px;border-radius:10px;
+    background: var(--ink); color:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.3rem; flex-shrink:0;
+  }
+  .module-card.done .module-icon{ background: var(--basil); color:var(--cream); }
+  .module-text{ flex:1; }
+  .module-text .m-title{ font-weight:700; font-size:0.96rem; margin-bottom:2px;}
+  .module-text .m-sub{ font-size:0.78rem; color:#7a7568; }
+  .module-check{ font-size:1.2rem; color:var(--basil); }
+  .module-arrow{ color: var(--wine); font-size:1.3rem; }
+
+  .score-banner{
+    background: var(--wine);
+    color: var(--cream);
+    border-radius:14px;
+    padding:16px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+  }
+  .score-banner .num{ font-family:'Fraunces',serif; font-size:1.7rem; font-weight:800; }
+  .score-banner .lab{ font-size:0.72rem; letter-spacing:0.04em; opacity:0.85; }
+
+  .share-box{
+    margin-top:auto;
+    border-top:1px dashed var(--line);
+    padding-top:18px;
+  }
+  .share-box p{ font-size:0.8rem; color:#7a7568; margin:0 0 10px; }
+  .btn-secondary{
+    display:inline-block;
+    font-family:'Manrope',sans-serif;
+    font-weight:700;
+    font-size:0.85rem;
+    color:var(--ink);
+    background:transparent;
+    border:1.5px solid var(--ink);
+    padding:10px 16px;
+    border-radius:100px;
+    cursor:pointer;
+  }
+
+  /* QUIZ SCREEN */
+  .quiz-head{
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .back-btn{
+    width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--line); background:var(--card);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.1rem; cursor:pointer; flex-shrink:0; color:var(--ink);
+  }
+  .progress-track{
+    flex:1;
+    display:flex;
+    gap:6px;
+  }
+  .progress-dot{
+    flex:1; height:8px; border-radius:4px;
+    background: var(--line);
+    overflow:hidden;
+  }
+  .progress-dot i{
+    display:block; height:100%; width:0%;
+    background: var(--gold);
+    transition: width .3s ease;
+  }
+  .progress-dot.filled i{ width:100%; background: var(--wine);}
+  .progress-dot.current i{ width:100%; background: var(--gold);}
+
+  .q-module-tag{
+    font-size:0.72rem; font-weight:700; letter-spacing:0.05em;
+    color:var(--wine); margin-bottom:8px;
+  }
+  .q-text{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.35rem;
+    line-height:1.28;
+    margin-bottom:22px;
+    color:var(--ink);
+  }
+  .q-context{
+    font-size:0.85rem;
+    color:#7a7568;
+    background: rgba(122,38,49,0.06);
+    border-left:3px solid var(--wine);
+    padding:10px 12px;
+    border-radius:4px;
+    margin-bottom:20px;
+    line-height:1.45;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .option{
+    background: var(--card);
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:0.92rem;
+    font-weight:600;
+    color:var(--ink);
+    cursor:pointer;
+    text-align:left;
+    font-family:'Manrope',sans-serif;
+    line-height:1.4;
+    transition: all .15s ease;
+    position:relative;
+  }
+  .option:active{ transform: scale(0.985); }
+  .option.correct{
+    border-color:var(--basil); background:#F1F4EC; color:var(--basil);
+  }
+  .option.wrong{
+    border-color:var(--wine); background:#F8ECEC; color:var(--wine-dark);
+    opacity:0.75;
+  }
+  .option.disabled{ pointer-events:none; }
+  .option .mark{ float:right; font-weight:800; }
+
+  .feedback{
+    margin-top:18px;
+    padding:14px 16px;
+    border-radius:12px;
+    font-size:0.87rem;
+    line-height:1.5;
+    display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.ok{ background: #F1F4EC; color:#33422a; border:1px solid rgba(74,93,58,0.25);}
+  .feedback.bad{ background:#F8ECEC; color:#5A1B23; border:1px solid rgba(122,38,49,0.25);}
+  .feedback strong{ display:block; font-family:'Fraunces',serif; font-size:0.95rem; margin-bottom:4px;}
+
+  .next-btn{
+    margin-top:22px;
+    width:100%;
+    background:var(--ink);
+    color:var(--cream);
+    border:none;
+    padding:15px;
+    border-radius:100px;
+    font-family:'Manrope',sans-serif;
+    font-weight:700;
+    font-size:0.95rem;
+    cursor:pointer;
+    display:none;
+  }
+  .next-btn.show{ display:block; }
+
+  /* RESULT SCREEN */
+  .result{ align-items:center; text-align:center; justify-content:center; }
+  .result .badge{
+    width:88px; height:88px;
+    border-radius:50%;
+    background: var(--wine);
+    display:flex;align-items:center;justify-content:center;
+    font-size:2.4rem;
+    margin-bottom:18px;
+  }
+  .result h2{ font-size:1.7rem; margin-bottom:8px;}
+  .result p{ font-size:0.92rem; color:#4b473f; max-width:32ch; margin: 0 auto 24px; line-height:1.5;}
+  .result-score{
+    font-family:'Fraunces',serif;
+    font-size:3.2rem;
+    font-weight:800;
+    color:var(--wine);
+    margin-bottom:2px;
+  }
+  .result-score span{ font-size:1.2rem; color:#7a7568; font-weight:600; font-family:'Manrope',sans-serif;}
+  .result-sub{ font-size:0.8rem; color:#7a7568; margin-bottom:28px; }
+
+  .btn-primary{
+    background:var(--wine);
+    color:var(--cream);
+    border:none;
+    padding:15px 28px;
+    border-radius:100px;
+    font-family:'Manrope',sans-serif;
+    font-weight:700;
+    font-size:0.95rem;
+    cursor:pointer;
+    width:100%;
+    margin-bottom:12px;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+    padding:14px 28px;
+    border-radius:100px;
+    font-family:'Manrope',sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    cursor:pointer;
+    width:100%;
+  }
+
+  .wa-block{
+    margin-top:20px;
+    background: var(--card);
+    border:1px dashed var(--line);
+    border-radius:14px;
+    padding:16px;
+    text-align:left;
+    font-size:0.85rem;
+    line-height:1.5;
+    color:#4b473f;
+  }
+  .wa-block strong{ color:var(--ink); font-family:'Fraunces',serif; display:block; margin-bottom:6px; font-size:1rem;}
+  .copy-line{
+    margin-top:10px;
+    background: var(--ink);
+    color: var(--gold);
+    font-family: 'Manrope', monospace;
+    font-size:0.8rem;
+    padding:10px 12px;
+    border-radius:8px;
+    word-break:break-word;
+  }
+
+  ::selection{ background: var(--gold); color:var(--ink); }
+
+  /* ---------- SCENARIO MODE ---------- */
+  .scenario-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:0.68rem;
+    font-weight:800;
+    letter-spacing:0.04em;
+    background: var(--ink);
+    color: var(--gold);
+    padding:4px 10px;
+    border-radius:100px;
+    margin-bottom:14px;
+  }
+  .scenario-scene{
+    background: var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 18px;
+    margin-bottom:18px;
+  }
+  .scenario-scene .scene-label{
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--wine);
+    letter-spacing:0.03em;
+    margin-bottom:10px;
+  }
+  .scenario-scene .scene-text{
+    font-family:'Fraunces', serif;
+    font-size:1.18rem;
+    font-weight:600;
+    line-height:1.4;
+    color:var(--ink);
+  }
+  .scenario-scene .scene-text .voice{
+    display:block;
+    margin-top:10px;
+    font-style:italic;
+    font-family:'Manrope', sans-serif;
+    font-weight:600;
+    font-size:0.95rem;
+    color:#5a5647;
+    background: rgba(28,27,23,0.04);
+    padding:10px 12px;
+    border-radius:8px;
+  }
+  .scenario-choices{ display:flex; flex-direction:column; gap:10px; }
+  .scenario-choice{
+    background: var(--card);
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:0.9rem;
+    font-weight:600;
+    color:var(--ink);
+    cursor:pointer;
+    text-align:left;
+    font-family:'Manrope',sans-serif;
+    line-height:1.4;
+  }
+  .scenario-choice:active{ transform: scale(0.985); }
+  .scenario-outcome{
+    border-radius:14px;
+    padding:16px 18px;
+    margin-top:4px;
+    font-size:0.88rem;
+    line-height:1.55;
+  }
+  .scenario-outcome.great{ background:#F1F4EC; border:1px solid rgba(74,93,58,0.3); color:#33422a; }
+  .scenario-outcome.ok{ background:#FBF4E2; border:1px solid rgba(201,169,79,0.4); color:#6b5a24; }
+  .scenario-outcome.poor{ background:#F8ECEC; border:1px solid rgba(122,38,49,0.25); color:#5A1B23; }
+  .scenario-outcome strong{
+    display:flex; align-items:center; gap:8px;
+    font-family:'Fraunces',serif; font-size:1.02rem; margin-bottom:6px;
+  }
+  .scenario-meter{
+    display:flex; gap:5px; margin-bottom:16px;
+  }
+  .scenario-meter .pip{
+    flex:1; height:6px; border-radius:3px; background: var(--line);
+  }
+  .scenario-meter .pip.great{ background: var(--basil); }
+  .scenario-meter .pip.ok{ background: var(--gold); }
+  .scenario-meter .pip.poor{ background: var(--wine); }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand">Lipari<span>SZKOŁA SALI</span></div>
+    <div class="streak" id="totalScoreBadge">🏆 <span id="totalScoreNum">0</span> pkt</div>
+  </div>
+
+  <!-- HOME SCREEN -->
+  <div class="screen home" id="screen-home">
+    <div class="hero-line"></div>
+    <h1>Trenuj polecanie,<br><em>nie sprzedawanie.</em></h1>
+    <p class="lead">5 krótkich modułów. 2 minuty każdy. Zrób je w dowolnej kolejności — wynik ląduje w rankingu na grupie.</p>
+
+    <div class="module-list" id="moduleList"></div>
+
+    <h3 style="font-size:1.05rem; margin: 6px 0 12px; color:var(--wine);">Scenariusze na sali</h3>
+    <p style="font-size:0.82rem; color:#7a7568; margin:-6px 0 14px; line-height:1.45;">Trudniejszy poziom — nie ma tu jednej poprawnej odpowiedzi, tylko konsekwencje wyboru.</p>
+    <div class="module-list" id="scenarioList"></div>
+
+    <div class="share-box">
+      <p>Zrobiłeś/aś moduł? Wrzuć wynik na grupę — jeden klik.</p>
+      <button class="btn-secondary" id="shareBtn">Skopiuj wynik do WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen hidden" id="screen-quiz">
+    <div class="quiz-head">
+      <button class="back-btn" id="backBtn">←</button>
+      <div class="progress-track" id="progressTrack"></div>
+    </div>
+
+    <div class="q-module-tag" id="qModuleTag">MODUŁ</div>
+    <div class="q-context hidden" id="qContext"></div>
+    <div class="q-text" id="qText">Pytanie</div>
+
+    <div class="options" id="qOptions"></div>
+
+    <div class="feedback" id="qFeedback">
+      <strong id="fbTitle"></strong>
+      <span id="fbBody"></span>
+    </div>
+
+    <button class="next-btn" id="nextBtn">Dalej →</button>
+  </div>
+
+  <!-- SCENARIO SCREEN -->
+  <div class="screen hidden" id="screen-scenario">
+    <div class="quiz-head">
+      <button class="back-btn" id="backBtnScenario">←</button>
+      <div class="progress-track" id="progressTrackScenario"></div>
+    </div>
+    <div class="scenario-badge">🎭 SCENARIUSZ NA SALI</div>
+    <div id="scenarioBody"></div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen result hidden" id="screen-result">
+    <div class="badge" id="resultBadge">🍷</div>
+    <h2 id="resultTitle">Moduł ukończony</h2>
+    <div class="result-score"><span id="resScoreLabel"></span></div>
+    <p id="resultText">Dobra robota.</p>
+
+    <button class="btn-primary" id="retryBtn">Spróbuj jeszcze raz</button>
+    <button class="btn-ghost" id="homeBtn">Wróć do modułów</button>
+
+    <div class="wa-block">
+      <strong>Wrzuć na grupę 👇</strong>
+      Skopiuj i wklej na WhatsApp, żeby zaliczyć się do rankingu tygodnia.
+      <div class="copy-line" id="waLine">—</div>
+      <button class="btn-secondary" style="margin-top:12px;" id="copyResultBtn">Kopiuj</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ================== DANE MERYTORYCZNE — OPARTE NA MENU LIPARI ================== */
+
+const MODULES = [
+  {
+    id: "parowanie",
+    title: "Parowanie: danie + wino",
+    sub: "10 pytań · win i dania z karty",
+    icon: "🍷",
+    questions: [
+      {
+        text: "Gość zamawia Tagliere di Salumi e Formaggi. Co polecasz do kieliszka?",
+        context: "Deska wędlin i serów — tłuszcz i słoność wołają o wino z garbnikami i owocową głębią.",
+        options: [
+          {t:"Vitese Nero D'Avola — rubinowa czerwień, śliwka i czereśnia z nutą przypraw", correct:true, note:"Dokładnie tak — czerwone o średnim ciele i owocowości równoważy słoność wędlin i przełamuje tłuszcz serów."},
+          {t:"Vitese Grillo — białe, słomkowe, nuty tropikalne", correct:false, note:"To wino jest zbyt lekkie i owocowo-kwiatowe na intensywność wędlin i serów dojrzewających."},
+          {t:"Prosecco Treviso — półwytrawne musujące", correct:false, note:"Prosecco lepiej sprawdzi się jako aperitif, nie przy tłustej desce wędlin."}
+        ]
+      },
+      {
+        text: "Który drink najlepiej dopasujesz do Frutti di Mare (owoce morza, chili)?",
+        context: "Danie z krewetkami, mulami i chili — potrzebuje czegoś orzeźwiającego, nie ciężkiego.",
+        options: [
+          {t:"Prosecco Rose Afra — Extra Dry, eleganckie, polecane do skorupiaków", correct:true, note:"Karta win wprost wskazuje je do skorupiaków i delikatnych dań z owocami morza."},
+          {t:"Old Fashioned — bourbon, bitter, cukier trzcinowy", correct:false, note:"Zbyt mocny i słodki alkohol przytłoczy delikatność owoców morza."},
+          {t:"Primitivo di Manduria — czerwone, wiśnia, wanilia", correct:false, note:"Ciężkie czerwone wino z owocami morza to klasyczny błąd w parowaniu — garbniki gryzą się z rybą."}
+        ]
+      },
+      {
+        text: "Gość pyta 'co pasuje do pizzy Salami Piccante (ostra)?' Co odpowiadasz?",
+        context: "Ostre salami, jalapeños — pikantność najlepiej łagodzi coś z odrobiną słodyczy lub chłodu.",
+        options: [
+          {t:"Okocim Radler malina z borówką — orzeźwia i łagodzi pikantność", correct:true, note:"Owocowy radler świetnie kontrastuje z ostrością i chłodzi podniebienie — prosty, trafny cross-sell."},
+          {t:"Therasianer IPA — mocno chmielowe piwo rzemieślnicze", correct:false, note:"IPA wzmocni odczucie pikantności zamiast ją łagodzić — gorycz chmielu i ostre chili się nie lubią."},
+          {t:"Kore Zibbibo — wytrawne białe wino", correct:false, note:"Nie jest złym wyborem, ale nie tak intuicyjnym i odświeżającym jak radler przy ostrym daniu."}
+        ]
+      },
+      {
+        text: "Do Risotto con Gamberi (krewetki, cytrusy) pasuje raczej:",
+        context: "Delikatne risotto z owocami morza i nutą cytrusową.",
+        options: [
+          {t:"Vitese Sauvignon Blanc — świeże, cytrusowe aromaty", correct:true, note:"Kwasowość i cytrusowy charakter Sauvignon Blanc idealnie podkreślają danie, nie przytłaczając krewetek."},
+          {t:"Valpolicella Ripaso — ciemne, pełne, beczkowe", correct:false, note:"Zdecydowanie zbyt ciężkie i taninowe jak na delikatne risotto z owocami morza."},
+          {t:"Mojito — rum, mięta, limonka", correct:false, note:"Koktajl na bazie rumu to niecodzienny wybór do dania — lepszy do aperitivo niż w trakcie posiłku."}
+        ]
+      },
+      {
+        text: "Gość świętuje rocznicę i zamawia Fettuccine con Gamberi e Salami Spianata. Jaki drink na start wieczoru zaproponujesz?",
+        context: "To moment na aperitivo — coś eleganckiego, budującego nastrój przed daniem.",
+        options: [
+          {t:"Pornstar Martini — z kieliszkiem Prosecco, świąteczny charakter", correct:true, note:"Efektowny, savoir-vivre okazji — dobrze pasuje do rocznicy i jest naturalnym aperitivo przed daniem."},
+          {t:"Wino domowe, kieliszek", correct:false, note:"Nie jest złe, ale nie buduje wyjątkowości okazji — a to Twoja szansa na wyższy rachunek i lepsze wrażenie."},
+          {t:"Woda gazowana", correct:false, note:"To pominięta okazja na aperitivo i cross-sell przy specjalnej okazji gościa."}
+        ]
+      },
+      {
+        text: "Do Spaghetti Aglio e Olio z owocami morza pasuje raczej:",
+        context: "Danie lekkie, czosnkowo-oliwne, z frutti di mare — bez ciężkiego sosu pomidorowego.",
+        options: [
+          {t:"Vitese Grillo — słomkowe, tropikalne nuty, kredowa świeżość", correct:true, note:"Lekkie białe wino nie przytłoczy delikatności owoców morza i dobrze gra z aromatem czosnku i oliwy."},
+          {t:"Principe Di Granatey Syrah — czerwone, pełne, przyprawowe", correct:false, note:"Czerwone wino z owocami morza to klasyczne zderzenie garbników z rybą — smak wychodzi metaliczny."},
+          {t:"Whiskey Sour", correct:false, note:"Mocny, kwaśny koktajl na bazie bourbonu kompletnie zdominuje delikatne danie z owocami morza."}
+        ]
+      },
+      {
+        text: "Który koktajl polecisz do Involtini alla Siciliana (roladki z indyka, ser Pecorino, orzeszki)?",
+        context: "Danie mięsne, słone od sera, z chrupiącą teksturą orzechów.",
+        options: [
+          {t:"Negroni Sbagliato — lekko gorzkie, z Prosecco zamiast ginu", correct:true, note:"Gorzko-musująca lekkość dobrze przecina słoność sera Pecorino, nie dominując nad delikatnym mięsem indyka."},
+          {t:"Cosmopolitan — wódka, Cointreau, żurawina", correct:false, note:"Zbyt owocowo-słodki profil nie współgra z wytrawnym, słonym charakterem dania."},
+          {t:"Sok pomarańczowy", correct:false, note:"To pominięta okazja na sprzedaż — danie na tyle wytrawne, że warto zaproponować coś z karty alkoholi."}
+        ]
+      },
+      {
+        text: "Gość zamawia Cassata al Forno (sycylijski sernik). Co zaproponujesz do deseru?",
+        context: "Deser na bazie kruchego ciasta i ricotty — słodki, ale nie przesadnie ciężki.",
+        options: [
+          {t:"Kieliszek Prosecco Treviso — świeże, owocowo-kwiatowe, półwytrawne", correct:true, note:"Delikatna słodycz i bąbelki Prosecco świetnie odświeżają podniebienie po serniku, nie konkurując z jego smakiem."},
+          {t:"Vitese Nero D'Avola — czerwone wytrawne", correct:false, note:"Wytrawne czerwone wino przy słodkim deserze zwykle smakuje cierpko i nieprzyjemnie kwaśno."},
+          {t:"Piwo Menabrea Weiss", correct:false, note:"Pszeniczne piwo nie jest naturalnym wyborem do słodkiego sycylijskiego deseru."}
+        ]
+      },
+      {
+        text: "Do Risotto di Coniglio (królik) najlepiej zaproponować:",
+        context: "Danie mięsne o delikatnym smaku, przygotowane na bazie białego wina.",
+        options: [
+          {t:"Kore Zibbibo — kwiatowe, z nutami brzoskwini i gruszki", correct:true, note:"Białe wino o pełniejszym charakterze dobrze podąża za delikatnym, ale wytrawnym smakiem królika i risotto na winie."},
+          {t:"Lambrusco — czerwone musujące, owoce leśne", correct:false, note:"Zbyt intensywne i słodkawe jak na subtelność dania z królika."},
+          {t:"Aperol Spritz", correct:false, note:"To koktajl aperitivowy, nie towarzyszący głównemu daniu — lepszy przed posiłkiem niż w jego trakcie."}
+        ]
+      },
+      {
+        text: "Do Saltimbocca (piersi indyka w emulsji winno-maślanej) najlepiej pasuje:",
+        context: "Danie o delikatnym mięsie, ale bogatym, maślanym sosie.",
+        options: [
+          {t:"Vitese Sauvignon Blanc — świeże, z wyrazistą kwasowością", correct:true, note:"Kwasowość Sauvignon Blanc równoważy maślaną bogatość sosu, nie przytłaczając delikatności mięsa."},
+          {t:"Primitivo di Manduria — czerwone, wiśniowo-waniliowe", correct:false, note:"Zbyt intensywne i słodkawe jak na jasne mięso w delikatnym sosie maślanym."},
+          {t:"Menabrea Weiss — pszeniczne piwo", correct:false, note:"Nie jest to błędny wybór, ale wino lepiej podkreśli subtelność sosu winno-maślanego niż piwo pszeniczne."}
+        ]
+      }
+    ]
+  },
+  {
+    id: "skrypty",
+    title: "Jak pytać, żeby nie brzmieć jak sprzedawca",
+    sub: "10 pytań · pytania i otwarcia",
+    icon: "💬",
+    questions: [
+      {
+        text: "Które pytanie da lepszy efekt przy otwarciu stolika?",
+        context: "Sposób zadania pytania decyduje, czy gość w ogóle rozważy propozycję.",
+        options: [
+          {t:"\"Zacznijmy od czegoś na aperitivo — Aperol Spritz czy lampka Prosecco?\"", correct:true, note:"Pytanie z gotowym wyborem ułatwia decyzję i brzmi jak pomoc, nie sprzedaż."},
+          {t:"\"Czy chcecie Państwo coś do picia?\"", correct:false, note:"Pytanie zamknięte — najłatwiej odpowiedzieć 'nie, dziękuję' i temat jest zamknięty."},
+          {t:"\"Polecam Państwu koktajle z naszej karty.\"", correct:false, note:"To informacja, nie pytanie — nie angażuje gościa do podjęcia decyzji."}
+        ]
+      },
+      {
+        text: "Gość zamówił Merluzzo alla Ghiotta (dorsz). Jak najlepiej zapytać o wino?",
+        context: "Danie główne już wybrane — teraz moment na dopasowanie wina.",
+        options: [
+          {t:"\"Do dorsza świetnie pasuje nasze Vitese Grillo — nalać kieliszek?\"", correct:true, note:"Konkretna nazwa + łatwe 'tak/nie' zamiast pytania ogólnego o wino w ogóle."},
+          {t:"\"Czy chce Pan/Pani jakieś wino do tego?\"", correct:false, note:"Zbyt ogólne — zmusza gościa do samodzielnego przeglądania karty, co często kończy się rezygnacją."},
+          {t:"Nic nie mówisz, czekasz aż gość zapyta sam", correct:false, note:"Większość gości nie zapyta sama — to Twoja rola, żeby podpowiedzieć w dobrym momencie."}
+        ]
+      },
+      {
+        text: "Który moment jest najlepszy na zaproponowanie deseru?",
+        context: "Timing decyduje, czy propozycja zostanie odebrana jako pomocna czy nachalna.",
+        options: [
+          {t:"Zaraz po zebraniu talerzy po daniu głównym, zanim gość zapyta o rachunek", correct:true, note:"To naturalny moment przejścia — gość jeszcze nie myśli o wyjściu, a już skończył jeść."},
+          {t:"W trakcie jedzenia dania głównego", correct:false, note:"Przerywanie posiłku propozycją deseru odbierane jest jako nachalne i pospieszające gościa."},
+          {t:"Dopiero gdy gość poprosi o rachunek", correct:false, note:"Wtedy gość mentalnie już zamknął posiłek — szansa na deser jest dużo mniejsza."}
+        ]
+      },
+      {
+        text: "Gość mówi 'tylko główne danie, dziękuję'. Co robisz?",
+        context: "To test — jak reagujesz na pierwsze 'nie', decyduje o dalszym przebiegu obsługi.",
+        options: [
+          {t:"Przyjmujesz to spokojnie, uśmiechasz się i wracasz z propozycją np. przy deserze", correct:true, note:"Jedno 'nie' to nie porażka — dobra obsługa to więcej niż jedna próba w dobrych momentach, bez naciskania."},
+          {t:"Dopytujesz jeszcze raz \"na pewno? mamy pyszne wino\"", correct:false, note:"Naciskanie po odmowie buduje wrażenie nachalności, którego chcemy unikać."},
+          {t:"Nie wracasz już z żadną propozycją do końca wizyty", correct:false, note:"Jedna odmowa nie oznacza, że gość nie zechce niczego przy deserze czy kawie — warto wrócić w innym momencie."}
+        ]
+      },
+      {
+        text: "Które zdanie brzmi bardziej jak 'pomoc', a mniej jak 'sprzedaż'?",
+        context: "Dobór słów decyduje, jak gość odbiera Twoją intencję.",
+        options: [
+          {t:"\"Ta pizza jest świetna, ale osobiście zawsze biorę do niej dodatkowo aioli — pasuje rewelacyjnie.\"", correct:true, note:"Osobista rekomendacja i konkret budują autentyczność, a nie presję."},
+          {t:"\"Może Pan/Pani dokupić coś jeszcze do zamówienia?\"", correct:false, note:"Brzmi transakcyjnie i wprost jak próba zwiększenia rachunku."},
+          {t:"\"Musi Pan/Pani spróbować naszych dodatków.\"", correct:false, note:"Słowo 'musi' brzmi nachalnie, mimo dobrej intencji."}
+        ]
+      },
+      {
+        text: "Gość długo studiuje kartę win, nie mówiąc nic. Co robisz?",
+        context: "Cisza przy karcie zwykle oznacza niepewność, nie brak zainteresowania.",
+        options: [
+          {t:"Po chwili podchodzisz z pytaniem: \"Wolą Państwo coś lżejszego, czy pełniejsze wino?\"", correct:true, note:"Otwierasz rozmowę pytaniem, które od razu zawęża wybór, zamiast czekać aż gość sam poprosi o pomoc."},
+          {t:"Czekasz, aż gość Cię przywoła", correct:false, note:"Wielu gości czuje się niekomfortowo prosząc o pomoc i po prostu wybierze coś przypadkowo albo zrezygnuje z wina."},
+          {t:"Podchodzisz i pytasz \"Wybrali już Państwo?\" co jakieś 2 minuty", correct:false, note:"Częste podchodzenie z tym samym pytaniem wywołuje presję czasową, która utrudnia decyzję."}
+        ]
+      },
+      {
+        text: "Które otwarcie rozmowy o winie do dania głównego brzmi najlepiej?",
+        context: "Sposób sformułowania pytania wpływa na to, czy gość w ogóle rozważy zamówienie wina.",
+        options: [
+          {t:"\"Do tego dania mamy dwie opcje, które szczególnie polecam — powiedzieć o nich?\"", correct:true, note:"Zapowiedź konkretnej, ograniczonej liczby opcji ułatwia decyzję i brzmi jak pomocna podpowiedź eksperta."},
+          {t:"\"Mamy bardzo szeroką kartę win, może Pan/Pani na nią zerknąć\"", correct:false, note:"Odsyła gościa do samodzielnej pracy zamiast realnie pomóc w wyborze."},
+          {t:"Nie odzywasz się na temat wina w ogóle", correct:false, note:"To pominięta okazja — większość gości nie zapyta sama, jeśli nie zostanie to zasugerowane."}
+        ]
+      },
+      {
+        text: "Gość pyta \"co by Pan/Pani polecił/a?\". To pytanie oznacza:",
+        context: "To jeden z najłatwiejszych momentów do trafionej sugestii w całej obsłudze.",
+        options: [
+          {t:"Najlepszy możliwy moment na konkretną, pewną siebie rekomendację", correct:true, note:"Gość wprost prosi o Twoją opinię — wahanie lub zbyt ogólna odpowiedź (\"wszystko jest dobre\") marnuje tę okazję."},
+          {t:"Że gość testuje Twoją wiedzę, warto być ostrożnym", correct:false, note:"To nie jest test — to szczera prośba o pomoc w decyzji, najczęściej szukana z ulgą, nie podejrzliwością."},
+          {t:"Że lepiej odesłać go do karty dań, żeby sam zdecydował", correct:false, note:"To dokładnie odwrotność tego, o co prosi gość zadając to pytanie."}
+        ]
+      },
+      {
+        text: "Które podsumowanie zamówienia brzmi najbardziej profesjonalnie i daje szansę na dodatkową sprzedaż?",
+        context: "Powtórzenie zamówienia to naturalny moment na jeszcze jedną, delikatną sugestię.",
+        options: [
+          {t:"\"Podsumowując: Margherita i Insalata di Salmone. Do tego może kieliszek Prosecco na start?\"", correct:true, note:"Potwierdzenie zamówienia + naturalnie dołączona sugestia w jednym zdaniu, bez dodatkowego 'naciskania'."},
+          {t:"\"Podsumowując: Margherita i Insalata di Salmone. To wszystko?\"", correct:false, note:"Pytanie \"to wszystko?\" domyślnie zamyka temat, zamiast otwierać go na dodatkową propozycję."},
+          {t:"Powtarzasz zamówienie bez żadnego komentarza", correct:false, note:"To bezpieczne, ale pomija naturalną okazję do delikatnej sugestii przy podsumowaniu."}
+        ]
+      },
+      {
+        text: "Gość pyta o czas oczekiwania na pizzę i słysząc, że to 15 minut, wygląda na lekko zniecierpliwionego. Co robisz?",
+        context: "To dobry moment na propozycję, która jednocześnie rozwiązuje problem gościa i zwiększa zamówienie.",
+        options: [
+          {t:"\"W takim razie polecam coś na start, np. Focaccia — będzie na stole za chwilę\"", correct:true, note:"Rozwiązujesz realny problem gościa (czas oczekiwania) i jednocześnie naturalnie zwiększasz zamówienie — to klasyczne 'win-win' w obsłudze."},
+          {t:"\"Piętnaście minut to i tak szybko\"", correct:false, note:"Nie rozwiązuje niecierpliwości gościa ani nie wykorzystuje okazji do dodatkowej propozycji."},
+          {t:"Nie odpowiadasz nic więcej poza podaniem czasu oczekiwania", correct:false, note:"Tracisz naturalną okazję, żeby zamienić moment frustracji w dodatkowe zamówienie."}
+        ]
+      }
+    ]
+  },
+  {
+    id: "obiekcje",
+    title: "Obsługa 'nie, dziękuję'",
+    sub: "10 pytań · trudne momenty",
+    icon: "🛡️",
+    questions: [
+      {
+        text: "Gość: \"Nie, dzięki, tylko woda.\" Twoja reakcja?",
+        context: "To najczęstsza odmowa na sali — sposób reakcji buduje albo psuje resztę wizyty.",
+        options: [
+          {t:"\"Jasne, świetnie!\" — bez zbędnego komentarza, przynosisz wodę i wracasz do obsługi", correct:true, note:"Spokojna akceptacja bez presji buduje zaufanie — gość doceni brak naciskania."},
+          {t:"\"Naprawdę? U nas wszyscy biorą wino do tego dania.\"", correct:false, note:"Sugerowanie, że gość robi coś nietypowego, wywołuje dyskomfort i opór."},
+          {t:"Pytasz drugi raz za chwilę \"na pewno nic więcej?\"", correct:false, note:"Powtarzanie pytania po odmowie odbierane jest jako nachalne."}
+        ]
+      },
+      {
+        text: "Para wygląda na to, że rozważa wino, ale się waha. Co robisz?",
+        context: "Wahanie to nie 'nie' — to często brak pewności, którą wino wybrać.",
+        options: [
+          {t:"Podpowiadasz jedną, konkretną rekomendację zamiast czekać na ich decyzję", correct:true, note:"Zbyt duży wybór paraliżuje decyzję — konkretna podpowiedź ułatwia i przyspiesza wybór."},
+          {t:"Czekasz cierpliwie, aż sami zdecydują", correct:false, note:"Długie wahanie często kończy się rezygnacją z zamówienia wina w ogóle."},
+          {t:"Podajesz im od razu pełną kartę win do przeczytania", correct:false, note:"To pogłębia paraliż decyzyjny zamiast go rozwiązać."}
+        ]
+      },
+      {
+        text: "Gość mówi \"jestem na diecie\", gdy proponujesz deser. Jak reagujesz?",
+        context: "To sygnał, że warto dopasować propozycję, a nie porzucać temat całkowicie.",
+        options: [
+          {t:"\"Rozumiem — może w takim razie espresso albo coś lżejszego?\"", correct:true, note:"Adaptujesz propozycję zamiast się poddawać — to wciąż szansa na dosprzedaż, dopasowaną do potrzeby."},
+          {t:"Kończysz temat i odchodzisz od stolika", correct:false, note:"Tracisz szansę na propozycję czegoś lżejszego, co gość mógłby chętnie przyjąć."},
+          {t:"\"Ale to tylko jeden dzień, proszę spróbować!\"", correct:false, note:"Podważanie decyzji gościa dotyczącej diety jest nietaktowne i stawia go w niekomfortowej sytuacji."}
+        ]
+      },
+      {
+        text: "Który nawyk najbardziej pomaga radzić sobie z odmowami na dłuższą metę?",
+        context: "To pytanie o postawę, nie o konkretną sytuację.",
+        options: [
+          {t:"Traktowanie każdej propozycji jako pomoc w wyborze, nie personalny sukces/porażkę", correct:true, note:"Dzięki temu odmowa nie jest odbierana personalnie, a Ty nie tracisz pewności siebie przy kolejnym stoliku."},
+          {t:"Liczenie, ile razy powiedziano Ci 'nie' danego dnia", correct:false, note:"To prowadzi do frustracji i unikania proponowania czegokolwiek."},
+          {t:"Proponowanie coraz mocniej przy każdej kolejnej odmowie", correct:false, note:"Eskalacja nacisku pogarsza doświadczenie gościa i Twoją reputację na sali."}
+        ]
+      },
+      {
+        text: "Gość mówi: \"To trochę drogie jak na kieliszek wina\". Co robisz?",
+        context: "Uwagi o cenie to nie zawsze odmowa — czasem to prośba o uzasadnienie wartości.",
+        options: [
+          {t:"\"Rozumiem — to wino z małej winnicy na Sycylii, stąd cena. Mamy też lżejsze opcje w niższej cenie.\"", correct:true, note:"Krótkie uzasadnienie wartości + alternatywa w niższej cenie daje gościu realny wybór, zamiast poczucia, że musi zrezygnować."},
+          {t:"\"To i tak nasza najtańsza opcja\"", correct:false, note:"Brzmi defensywnie i nie rozwiązuje właściwego problemu — gość szuka wartości, nie usprawiedliwienia ceny."},
+          {t:"Milczysz i czekasz na decyzję gościa", correct:false, note:"Brak reakcji zostawia gościa samego z wątpliwością, którą łatwo było rozwiać jednym zdaniem."}
+        ]
+      },
+      {
+        text: "Stały gość zawsze zamawia to samo i ucina każdą Twoją sugestię. Jak podejść do tematu?",
+        context: "Stali goście wymagają innego podejścia niż nowi — znają już kartę.",
+        options: [
+          {t:"Od czasu do czasu wspominasz o czymś NOWYM w karcie, nie powtarzasz starych sugestii", correct:true, note:"Stali goście ucinają sugestie, bo znają już standardową ofertę — nowość budzi ciekawość zamiast automatycznej odmowy."},
+          {t:"Przestajesz cokolwiek proponować temu gościowi na stałe", correct:false, note:"Rezygnujesz całkowicie z okazji, którą łatwo odblokować inną, świeższą propozycją."},
+          {t:"Proponujesz dokładnie to samo co zawsze, licząc że kiedyś się zgodzi", correct:false, note:"Powtarzanie tej samej, już odrzuconej propozycji rzadko zmienia decyzję gościa."}
+        ]
+      },
+      {
+        text: "Gość odmawia deseru, mówiąc \"jestem najedzony/a\". Najlepsza reakcja to:",
+        context: "\"Najedzony\" to inny sygnał niż \"nie lubię słodkiego\" — warto to rozróżnić.",
+        options: [
+          {t:"\"Rozumiem! Może w takim razie tylko espresso na zakończenie?\"", correct:true, note:"Sytość nie wyklucza chęci na coś małego i niesycącego — espresso to naturalna, lekka propozycja w tej sytuacji."},
+          {t:"\"Ale nasz sernik jest naprawdę wyjątkowy, proszę spróbować\"", correct:false, note:"Ignorowanie sygnału sytości i naciskanie na duży deser zwykle kończy się drugą, mocniejszą odmową."},
+          {t:"Kończysz obsługę stolika bez dalszych pytań", correct:false, note:"Tracisz szansę na małą, łatwą do zaakceptowania propozycję (np. kawa), która nie wymaga najedzenia się."}
+        ]
+      },
+      {
+        text: "Dwie różne osoby przy stoliku reagują różnie na Twoją sugestię wina — jedna entuzjastycznie, druga z rezerwą. Co robisz?",
+        context: "Przy stoliku z kilkoma gośćmi reakcje bywają niejednorodne.",
+        options: [
+          {t:"Proponujesz wino na kieliszki zamiast butelki, żeby każdy wybrał osobno", correct:true, note:"Elastyczne rozwiązanie (kieliszki zamiast wspólnej butelki) pozwala pogodzić różne preferencje bez wywierania presji na niezdecydowaną osobę."},
+          {t:"Namawiasz osobę z rezerwą, żeby dołączyła do entuzjastycznej decyzji reszty stołu", correct:false, note:"Presja grupowa może zadziałać, ale zostawia niesmak i wrażenie naciskania na osobę, która się wahała."},
+          {t:"Rezygnujesz z tematu wina dla całego stolika", correct:false, note:"Tracisz sprzedaż dla osób, które faktycznie chciały wino, przez ostrożność wobec jednej niezdecydowanej osoby."}
+        ]
+      },
+      {
+        text: "Który sposób reagowania na odmowy najlepiej sprawdza się w praktyce, dzień po dniu?",
+        context: "To pytanie podsumowujące — o długoterminową postawę, nie pojedynczą sytuację.",
+        options: [
+          {t:"Spokojna akceptacja + szukanie kolejnej, dobrze dobranej okazji w trakcie wizyty", correct:true, note:"To podejście chroni Twoją energię i pewność siebie, a jednocześnie nie zamyka drzwi do sprzedaży w lepszym momencie."},
+          {t:"Unikanie proponowania czegokolwiek osobom, które już raz odmówiły", correct:false, note:"To gwarantowana strata potencjalnej sprzedaży przy kolejnej, lepszej okazji w trakcie tej samej wizyty."},
+          {t:"Traktowanie każdej odmowy jako osobistej porażki wymagającej rewanżu przy następnej propozycji", correct:false, note:"To prowadzi do wypalenia i nachalności, zamiast spokojnej, profesjonalnej postawy."}
+        ]
+      },
+      {
+        text: "Gość mówi \"może innym razem\" na propozycję deseru. Co to najczęściej oznacza i jak reagujesz?",
+        context: "To odmowa \"miękka\" — inna niż stanowcze \"nie\".",
+        options: [
+          {t:"Przyjmujesz spokojnie, dziękujesz i kończysz temat bez naciskania", correct:true, note:"\"Może innym razem\" to uprzejma forma odmowy — najlepiej uszanować ją bez prób przekonywania, co buduje dobre wrażenie na przyszłość."},
+          {t:"Pytasz \"a może jednak teraz, tylko spróbować kawałek?\"", correct:false, note:"Naciskanie po uprzejmej odmowie podważa jej sens i może być odebrane jako brak szacunku dla decyzji gościa."},
+          {t:"Traktujesz to jako obietnicę i zapisujesz, żeby zaproponować ponownie za tydzień", correct:false, note:"To nadinterpretacja uprzejmego zwrotu grzecznościowego, który zwykle oznacza po prostu 'nie teraz'."}
+        ]
+      }
+    ]
+  },
+  {
+    id: "koktajle",
+    title: "Karta koktajli od podszewki",
+    sub: "10 pytań · wiedza produktowa",
+    icon: "🍸",
+    questions: [
+      {
+        text: "Który koktajl zawiera Prosecco jako główny składnik?",
+        context: "Warto wiedzieć na pamięć, co polecić gościom lubiącym musujące.",
+        options: [
+          {t:"Sicilian Spritz", correct:true, note:"Limoncello + Prosecco + woda gazowana + bazylia — jeden z flagowych drinków na bazie Prosecco."},
+          {t:"Whiskey Sour", correct:false, note:"To klasyk na bazie bourbonu, bez Prosecco."},
+          {t:"Cosmopolitan", correct:false, note:"Bazuje na wódce i Cointreau, bez Prosecco."}
+        ]
+      },
+      {
+        text: "Gość pyta o coś 'lekkiego na aperitivo, orzeźwiającego'. Co proponujesz?",
+        context: "Aperitivo powinno pobudzać apetyt, nie obciążać przed posiłkiem.",
+        options: [
+          {t:"Hugo — Prosecco, syrop z kwiatów bzu, mięta, limonka, woda sodowa", correct:true, note:"Lekki, kwiatowo-cytrusowy, idealny na rozpoczęcie posiłku."},
+          {t:"Old Fashioned — mocny, bourbonowy", correct:false, note:"To zbyt mocny i ciężki drink na rozpoczęcie posiłku, lepszy na koniec wieczoru."},
+          {t:"Pornstar Martini", correct:false, note:"Świetny drink, ale bardziej deserowy/wieczorowy niż typowo aperitivowy."}
+        ]
+      },
+      {
+        text: "Negroni Sbagliato różni się od klasycznego Negroni tym, że:",
+        context: "To pytanie 'must-know' — goście często pytają o różnicę.",
+        options: [
+          {t:"Prosecco zastępuje gin", correct:true, note:"To właśnie 'sbagliato' (błąd, pomyłka) — kiedyś przez przypadek użyto Prosecco zamiast ginu i tak powstał klasyk."},
+          {t:"Ma dodatek limonki zamiast pomarańczy", correct:false, note:"To nie jest różnica między tymi dwoma drinkami."},
+          {t:"Jest podawany na ciepło", correct:false, note:"Oba drinki podaje się na zimno/z lodem."}
+        ]
+      },
+      {
+        text: "Który drink jest najlepszym cross-sellem do Cannoli (deser)?",
+        context: "Deser na koniec posiłku — czas na coś, co podkreśli słodycz.",
+        options: [
+          {t:"Limoncello / espresso", correct:true, note:"Klasyczne włoskie zakończenie posiłku — espresso lub kieliszek limoncello doskonale komponują się z cannoli."},
+          {t:"Margarita", correct:false, note:"Kwaśny, słony rant szklanki nie pasuje do słodkiego deseru sycylijskiego."},
+          {t:"Piwo Therasianer IPA", correct:false, note:"Gorzki chmiel IPA gryzie się ze słodyczą ricotty i czekolady."}
+        ]
+      },
+      {
+        text: "Gość chce coś 'jak Aperol Spritz, ale mocniejszego, bardziej wytrawnego'. Co proponujesz?",
+        context: "To okazja na upsell w obrębie tej samej rodziny smakowej.",
+        options: [
+          {t:"Americano — Campari, czerwony wermut, woda gazowana, lekki i wytrawny", correct:true, note:"To naturalny krok w stronę bardziej wytrawnego, gorzkiego smaku, wciąż w rodzinie aperitivo."},
+          {t:"Cosmopolitan", correct:false, note:"To zupełnie inny profil smakowy — owocowo-słodki, nie wytrawny."},
+          {t:"Mojito", correct:false, note:"Orzeźwiający, ale nie idzie w stronę 'mocniejszy i bardziej wytrawny'."}
+        ]
+      },
+      {
+        text: "Który koktajl bazuje na tequili?",
+        context: "Podstawowa wiedza o bazowych alkoholach w karcie — gość często pyta wprost.",
+        options: [
+          {t:"Margarita — tequila, triple sec, sok z limonki", correct:true, note:"Klasyczny koktajl na bazie tequili, jeden z filarów karty 'Klasyki światowe'."},
+          {t:"Whiskey Sour", correct:false, note:"Bazuje na bourbonie, nie na tequili."},
+          {t:"Garibaldi", correct:false, note:"Bazuje na Campari i soku pomarańczowym, bez tequili."}
+        ]
+      },
+      {
+        text: "Gość pyta, czym różni się Bellini od Rossini. Poprawna odpowiedź to:",
+        context: "Oba to koktajle na bazie Prosecco i musu owocowego — różnica jest w owocu.",
+        options: [
+          {t:"Bellini to brzoskwiniowe purée, Rossini to mus z truskawek", correct:true, note:"To jedyna różnica między tymi drinkami — baza Prosecco jest taka sama, zmienia się tylko owoc."},
+          {t:"Bellini jest bezalkoholowe, Rossini nie", correct:false, note:"Oba drinki bazują na Prosecco, więc oba zawierają alkohol."},
+          {t:"Rossini jest podawany na ciepło", correct:false, note:"Oba serwuje się schłodzone, tak jak większość koktajli na bazie Prosecco."}
+        ]
+      },
+      {
+        text: "Który drink z karty najlepiej polecić komuś, kto mówi 'nie lubię słodkich koktajli'?",
+        context: "Warto znać profil smakowy każdej pozycji, żeby trafnie odpowiadać na preferencje gościa.",
+        options: [
+          {t:"Americano lub Negroni Sbagliato — obie pozycje określone jako lekkie i wytrawne", correct:true, note:"To dwie pozycje z karty wprost opisane jako wytrawne/lekkie, idealne dla gościa unikającego słodyczy."},
+          {t:"Pornstar Martini", correct:false, note:"To jeden ze słodszych, bardziej owocowych drinków w karcie — dokładne przeciwieństwo preferencji gościa."},
+          {t:"Cosmopolitan", correct:false, note:"Sok żurawinowy nadaje temu drinkowi wyraźnie owocowo-słodki charakter."}
+        ]
+      },
+      {
+        text: "Który koktajl jest dobrym wyborem dla gościa, który chce 'coś orzeźwiającego z miętą'?",
+        context: "Nuta mięty pojawia się w kilku pozycjach karty — warto wiedzieć, w których dokładnie.",
+        options: [
+          {t:"Mojito lub Hugo — oba zawierają świeżą miętę", correct:true, note:"Obie pozycje mają miętę jako jeden z głównych składników smakowych, co czyni je naturalnym wyborem dla tej prośby."},
+          {t:"Old Fashioned", correct:false, note:"To mocny, bourbonowy drink bez mięty w składzie."},
+          {t:"Garibaldi", correct:false, note:"To prosty koktajl na bazie Campari i soku pomarańczowego, bez mięty."}
+        ]
+      },
+      {
+        text: "Który drink z 'Włoskich klasycznych' jest najlżejszy alkoholowo i najprostszy w składzie?",
+        context: "Warto wiedzieć, co polecić gościom szukającym czegoś prostego i lekkiego.",
+        options: [
+          {t:"Garibaldi — tylko Campari i świeżo wyciskany sok pomarańczowy", correct:true, note:"Dwuskładnikowy, lekki i orzeźwiający — najprostszy drink w tej sekcji karty."},
+          {t:"Negroni Sbagliato", correct:false, note:"Zawiera trzy składniki (Campari, wermut, Prosecco) — bardziej złożony niż Garibaldi."},
+          {t:"Mandarinello Tonic", correct:false, note:"Zawiera więcej składników (Mandarinello, tonic, mięta, cytryna) niż Garibaldi."}
+        ]
+      }
+    ]
+  },
+  {
+    id: "dodatki",
+    title: "Attached selling: małe dodatki, duża różnica",
+    sub: "10 pytań · dodatki i okazje",
+    icon: "➕",
+    questions: [
+      {
+        text: "Który dodatek najłatwiej 'doczepić' do zamówienia pizzy, bez wysiłku sprzedażowego?",
+        context: "Attached selling działa najlepiej, gdy dodatek wydaje się oczywisty, nie naciągany.",
+        options: [
+          {t:"\"Do pizzy proponuję jeszcze Fritto Misto na start, żeby nie czekać w ciszy?\"", correct:true, note:"To naturalne wypełnienie czasu oczekiwania na pizzę — gość zwykle chętnie się zgadza."},
+          {t:"Milczysz i czekasz, aż gość sam dopyta o przystawki", correct:false, note:"Większość gości nie pomyśli sama o przystawce, jeśli nie zostanie to zaproponowane."},
+          {t:"Pytasz \"czy chce Pan/Pani coś jeszcze do zamówienia?\" na końcu", correct:false, note:"Pytanie zbyt ogólne, łatwe do odrzucenia z automatu."}
+        ]
+      },
+      {
+        text: "Grupa świętuje urodziny. Jaki attached selling zastosujesz?",
+        context: "Okazje specjalne to naturalny moment na wyjątkową propozycję.",
+        options: [
+          {t:"Proponujesz wspólny deser do podzielenia + świeczkę/serwis specjalny", correct:true, note:"Okazja podnosi szansę na 'tak' — to moment, kiedy grupa chętniej wydaje więcej na wspólne świętowanie."},
+          {t:"Traktujesz stolik jak każdy inny, bez zmiany podejścia", correct:false, note:"Tracisz naturalną okazję do zwiększenia wartości zamówienia przy specjalnej okazji."},
+          {t:"Proponujesz najdroższą pozycję z karty każdemu z osobna", correct:false, note:"To już nachalne i nieadekwatne do sytuacji — lepiej dopasować propozycję do charakteru okazji."}
+        ]
+      },
+      {
+        text: "Który przykład to prawidłowy 'attached selling', a nie upsell czy cross-sell?",
+        context: "Rozróżnienie technik pomaga stosować właściwą w danym momencie.",
+        options: [
+          {t:"Dodatkowy sos aioli do już zamówionego Fritto Misto", correct:true, note:"To mały, tani dodatek 'doczepiony' do już podjętej decyzji — klasyczny attached selling."},
+          {t:"Zamiana wina domowego na Vitese Grillo", correct:false, note:"To upselling — droższa wersja tego samego typu produktu."},
+          {t:"Zaproponowanie wina do zamówionego dania głównego", correct:false, note:"To cross-selling — uzupełniający produkt z innej kategorii."}
+        ]
+      },
+      {
+        text: "Kiedy najlepiej zaproponować dodatkową rundę drinków w Happy Hours?",
+        context: "Timing i kontekst promocji wpływają na skuteczność propozycji.",
+        options: [
+          {t:"Gdy widzisz, że szklanki/kieliszki są już prawie puste, w trakcie trwania Happy Hours", correct:true, note:"To naturalny moment — gość i tak myśli o kolejnym drinku, a przypomnienie o promocji ułatwia decyzję."},
+          {t:"Zaraz po podaniu pierwszego drinka", correct:false, note:"Zbyt wcześnie — gość jeszcze nie skończył pierwszego, propozycja wypada nienaturalnie."},
+          {t:"Dopiero gdy gość prosi o rachunek", correct:false, note:"Wtedy szansa na dodatkową rundę jest już właściwie stracona."}
+        ]
+      },
+      {
+        text: "Gość zamawia Cannoli. Jaki naturalny dodatek zaproponujesz?",
+        context: "Attached selling do deserów działa najlepiej, gdy dodatek jest mały i tani.",
+        options: [
+          {t:"\"Do tego świetnie pasuje espresso — dorzucić?\"", correct:true, note:"Mała, tania, oczywista propozycja dopełniająca deser — klasyczny, nienachalny attached selling."},
+          {t:"Proponujesz od razu drugi deser", correct:false, note:"To zbyt duży krok jak na attached selling — lepiej zacząć od małego, taniego dodatku."},
+          {t:"Nie proponujesz nic, deser to zamknięty temat", correct:false, note:"Tracisz prostą okazję na niewielki, ale wartościowy dodatek do rachunku."}
+        ]
+      },
+      {
+        text: "Który moment jest najlepszy na zaproponowanie karafki wina zamiast pojedynczych kieliszków?",
+        context: "Karafka to naturalny upsell/attached selling przy odpowiedniej wielkości grupy.",
+        options: [
+          {t:"Gdy przy stoliku są 3+ osoby, a przynajmniej dwie już zamówiły to samo wino na kieliszki", correct:true, note:"To moment, w którym karafka faktycznie się opłaca gościom (niższa cena za ml) i jest łatwa do zaproponowania jako korzyść, nie dodatkowy koszt."},
+          {t:"Przy stoliku dla jednej osoby", correct:false, note:"Karafka przy jednej osobie to zbyt duża ilość wina — lepiej zostać przy kieliszku."},
+          {t:"Na samym początku wizyty, zanim ktokolwiek cokolwiek zamówi", correct:false, note:"Zbyt wcześnie — lepiej poczekać, aż będzie widać, że kilka osób faktycznie chce to samo wino."}
+        ]
+      },
+      {
+        text: "Do zamówienia dwóch pizz na wynos gość dodaje 'to chyba wszystko'. Jaki dodatek warto jeszcze zaproponować?",
+        context: "Zamówienia na wynos też mają potencjał na attached selling, choć inny niż na miejscu.",
+        options: [
+          {t:"\"Dorzucić sos czosnkowy albo napój do zabrania?\"", correct:true, note:"Proste, tanie dodatki pasujące do zamówienia na wynos — łatwe 'tak' bez większego namysłu."},
+          {t:"Proponujesz deser typu Tiramisu na wynos", correct:false, note:"Nie jest to złe, ale mniej oczywiste niż mały, tani dodatek bezpośrednio powiązany z pizzą."},
+          {t:"Nie proponujesz nic, żeby nie przedłużać zamówienia na wynos", correct:false, note:"Krótkie, trafne pytanie o dodatek nie wydłuża zamówienia znacząco, a może zwiększyć jego wartość."}
+        ]
+      },
+      {
+        text: "Który z poniższych to najlepszy przykład 'dobrego' attached sellingu (nie nachalnego)?",
+        context: "Granica między pomocną sugestią a nachalnością jest cienka — warto ją rozumieć na przykładach.",
+        options: [
+          {t:"Jedna, krótka, konkretna propozycja przy naturalnym momencie zamówienia", correct:true, note:"To definicja dobrego attached sellingu — mały dodatek, jeden raz, w odpowiednim momencie, bez powtarzania czy naciskania."},
+          {t:"Wymienianie wszystkich możliwych dodatków z menu przy każdym zamówieniu", correct:false, note:"Zbyt duża liczba propozycji naraz przytłacza gościa i brzmi jak recytowanie menu, nie realna pomoc."},
+          {t:"Automatyczne dodawanie dodatku do zamówienia bez pytania gościa", correct:false, note:"To już nie sprzedaż tylko nieuczciwa praktyka — dodatek zawsze musi być propozycją, nie faktem dokonanym."}
+        ]
+      },
+      {
+        text: "Gość zamawia deskę serów i pyta 'to chyba wystarczy dla dwóch osób?'. Jak to wykorzystać?",
+        context: "Pytanie gościa o ilość jedzenia to naturalne wejście do rozmowy o dodatkach.",
+        options: [
+          {t:"\"Powinno wystarczyć, ale dla pewności moglibyśmy dorzucić grissini albo miód do sera\"", correct:true, note:"Odpowiadasz na pytanie gościa, jednocześnie naturalnie sugerując mały dodatek, który realnie uzupełnia danie."},
+          {t:"\"Tak, wystarczy\" — bez żadnej dodatkowej propozycji", correct:false, note:"Poprawna, ale minimalistyczna odpowiedź, która pomija naturalną okazję do małej dosprzedaży."},
+          {t:"\"Może lepiej zamówić dwie deski, żeby na pewno starczyło\"", correct:false, note:"To już nie jest attached selling, tylko przesadzona sugestia, która może wyglądać na próbę zawyżenia rachunku."}
+        ]
+      },
+      {
+        text: "Który dodatek najlepiej zaproponować do zamówionego Aperol Spritz?",
+        context: "Attached selling działa też przy drinkach, nie tylko przy jedzeniu.",
+        options: [
+          {t:"Małą przekąskę, np. oliwki lub chipsy do drinka na start wieczoru", correct:true, note:"To naturalne, lekkie połączenie — aperitivo z małą przekąską to klasyczny, nienachalny attached selling."},
+          {t:"Od razu główne danie z karty", correct:false, note:"To zbyt duży krok jak na moment, w którym gość dopiero zaczyna wieczór od drinka."},
+          {t:"Nic — przy samych drinkach nie warto niczego proponować", correct:false, note:"To błędne założenie — moment aperitivo to dobra okazja na małą, tanią przekąskę."}
+        ]
+      }
+    ]
+  }
+];
+
+/* ================== SCENARIUSZE SYTUACYJNE (rozgałęziające się) ================== */
+/* Struktura: każdy scenariusz to drzewo scen. Każda scena ma tekst, opcjonalną
+   "voice" (bezpośrednia wypowiedź gościa), i listę wyborów. Każdy wybór prowadzi
+   do kolejnej sceny (next) LUB kończy scenariusz z oceną (outcome: great/ok/poor). */
+
+const SCENARIOS = [
+  {
+    id: "trudny-gosc",
+    title: "Gość niezadowolony z rachunku",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "😤",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik nr 4, koniec kolacji",
+        text: "Przynosisz rachunek za dwuosobową kolację z winem. Gość patrzy na kwotę i marszczy brwi.",
+        voice: "\"Przepraszam, ale to chyba pomyłka — nie zamawialiśmy tego drugiego wina.\"",
+        choices: [
+          { t:"\"Zaraz sprawdzę, chwileczkę\" — idziesz sprawdzić zamówienie w systemie", next:"s2a" },
+          { t:"\"Na pewno je Państwo zamawiali, mam to w systemie\"", next:"s2b" },
+          { t:"Od razu zdejmujesz pozycję z rachunku, żeby nie przedłużać", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Sprawdzasz w systemie",
+        text: "W systemie widzisz, że wino faktycznie zostało zamówione — dolewka przy drugim daniu, o którą prosił gość przy stole.",
+        voice: null,
+        choices: [
+          { t:"Wracasz i spokojnie pokazujesz zamówienie, przypominając moment dolewki", next:null, outcome:"great", outcomeText:"Sprawdzenie faktów przed reakcją to podstawa profesjonalizmu. Spokojne przypomnienie konkretnego momentu (nie oskarżanie gościa o kłamstwo) rozwiązuje sytuację bez konfliktu. Gość zwykle sam sobie przypomina i przeprasza." },
+          { t:"Wracasz i mówisz \"jednak się zgadza, proszę zapłacić\"", next:null, outcome:"ok", outcomeText:"Sprawdziłeś fakty, co jest dobre — ale ton \"proszę zapłacić\" brzmi konfrontacyjnie. Lepiej pokazać konkret (np. godzinę zamówienia) niż stawiać gościa w sytuacji, w której czuje się przyłapany." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Reakcja bez sprawdzenia",
+        text: "Gość marszczy brwi jeszcze mocniej.",
+        voice: "\"Może się Pan/Pani myli. Poproszę o sprawdzenie, zanim zapłacimy.\"",
+        choices: [
+          { t:"Przepraszasz za pochopną reakcję i idziesz sprawdzić", next:null, outcome:"poor", outcomeText:"Udało się uratować sytuację przeprosinami, ale zaufanie gościa już nadszarpnięte. Twierdzenie 'na pewno' bez sprawdzenia to ryzykowny nawyk — nawet gdy masz rację, brzmi to jak spieranie się z gościem." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Rezygnacja z pozycji",
+        text: "Zdejmujesz wino z rachunku bez sprawdzania. Gość płaci bez słowa.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"To rozwiązuje konflikt najszybciej, ale kosztem restauracji — jeśli wino faktycznie było zamówione, straciliście pieniądze niepotrzebnie. Szybkie ustępstwo bez sprawdzenia faktów to częsty błąd, który wychodzi na jaw dopiero przy rozliczeniu zmiany." }
+        ]
+      }
+    }
+  },
+  {
+    id: "duzy-stolik",
+    title: "Duży stolik, wszyscy chcą 'coś szybko'",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "⏱️",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 10-osobowy, piątkowy wieczór",
+        text: "Duża grupa, sala pełna, kolejka gości czeka na wolne stoliki. Grupa jeszcze przegląda menu.",
+        voice: "\"Możemy prosić o coś szybko? Mamy mało czasu.\"",
+        choices: [
+          { t:"Proponujesz od razu karafkę wina domowego + Focaccia na start, żeby zyskać czas", next:"s2a" },
+          { t:"Czekasz cierpliwie, aż każdy z 10 osób podejmie decyzję", next:"s2b" },
+          { t:"Przynosisz od razu menu z Happy Hours, sugerując najszybsze opcje", next:"s2a" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Grupa reaguje dobrze",
+        text: "Grupa chętnie zamawia zaproponowane pozycje na start, co daje im czas na decyzję co do dań głównych.",
+        voice: "\"Super, weźmy to, a w międzyczasie zdecydujemy o reszcie.\"",
+        choices: [
+          { t:"Wracasz za 3-4 minuty z pytaniem o dania główne, gdy widzisz że skończyli przeglądać kartę", next:null, outcome:"great", outcomeText:"Zaproponowanie czegoś na start rozwiązuje presję czasu i jednocześnie jest naturalnym cross-sellem (karafka + przystawka). Wyczucie momentu na powrót do stolika pokazuje, że rozumiesz rytm dużej grupy." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Frustracja rośnie",
+        text: "Mija 5 minut, grupa staje się coraz bardziej niecierpliwa, a Ty tracisz czas przy innych stolikach.",
+        voice: "\"Long o to prosimy, ale naprawdę się śpieszymy...\"",
+        choices: [
+          { t:"Teraz proponujesz coś na szybko, żeby zyskać czas", next:null, outcome:"ok", outcomeText:"Rozwiązanie jest to samo, ale spóźnione — frustracja gości już narosła. Ta sama propozycja podana od razu na starcie oszczędziłaby 5 minut napięcia po obu stronach." }
+        ]
+      }
+    }
+  },
+  {
+    id: "kompleks-alkoholowy",
+    title: "Gość, który już wypił za dużo",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🍷",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Późny wieczór, samotny gość przy barze",
+        text: "Gość zamówił już trzeci Negroni w ciągu godziny i wyraźnie jest podpity — głośniejszy niż wcześniej, trochę się zatacza wstając do toalety.",
+        voice: "\"Poproszę jeszcze jednego Negroni!\"",
+        choices: [
+          { t:"Podajesz kolejny drink bez komentarza — gość płaci, to jego wybór", next:"s2a" },
+          { t:"Proponujesz coś bezalkoholowego lub wodę zamiast kolejnego drinka, w miły sposób", next:"s2b" },
+          { t:"Odmawiasz wprost, mówiąc że gość wypił już za dużo", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Sytuacja się pogarsza",
+        text: "Gość po kolejnym drinku jest jeszcze głośniejszy, inni goście przy barze zaczynają zerkać z niepokojem.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Sprzedaż 'za wszelką cenę' bez patrzenia na kontekst to realne ryzyko — prawne (odpowiedzialność za podawanie alkoholu osobie nietrzeźwej), wizerunkowe (inni goście czują się niekomfortowo) i etyczne. Krótkoterminowy zysk z jednego drinka nie jest wart tego ryzyka." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Delikatna propozycja",
+        text: "Gość śmieje się, ale przyjmuje propozycję.",
+        voice: "\"Ha, chyba ma Pan/Pani rację. Poproszę wodę.\"",
+        choices: [
+          { t:"Koniec scenariusza — podajesz wodę z uśmiechem, bez robienia z tego large sprawy", next:null, outcome:"great", outcomeText:"To dokładnie właściwe podejście — delikatna, niekonfrontacyjna propozycja alternatywy chroni gościa, innych klientów i restaurację, a jednocześnie nie upokarza nikogo. Gen Z i starsi goście jednakowo doceniają takt bez moralizowania." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Konfrontacja",
+        text: "Gość czuje się urażony bezpośrednią odmową.",
+        voice: "\"Słucham? Jestem w pełni świadomy, co robię.\"",
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"ok", outcomeText:"Ochrona gościa i restauracji to słuszny instynkt, ale forma \"wypił Pan za dużo\" brzmi oskarżająco i publicznie stawia gościa w niekomfortowej sytuacji. Ten sam efekt (odmowa alkoholu) da się osiągnąć dużo łagodniej — patrz opcja z propozycją alternatywy." }
+        ]
+      }
+    }
+  },
+  {
+    id: "skarga-na-danie",
+    title: "\"To danie jest niedogotowane\"",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🍝",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 7, 10 minut po podaniu dania",
+        text: "Gość zjadł połowę Gnocchi Ripieni di Formaggio di Capra e Tartufo i przywołuje Cię gestem.",
+        voice: "\"Przepraszam, ale te gnocchi są w środku surowe. Nie mogę tego jeść.\"",
+        choices: [
+          { t:"Przepraszasz, zabierasz danie i od razu proponujesz nowe lub inną pozycję z menu", next:"s2a" },
+          { t:"Mówisz, że to normalna konsystencja tego dania", next:"s2b" },
+          { t:"Zabierasz talerz bez słowa i idziesz do kuchni bez informowania gościa co dalej", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Gość doceniony",
+        text: "Gość wyraźnie się rozluźnia, widząc szybką reakcję.",
+        voice: "\"Dziękuję, to miłe z Pana/Pani strony.\"",
+        choices: [
+          { t:"Wracasz z nowym daniem i pytasz, czy teraz wszystko w porządku, ewentualnie proponujesz deser gratis za czekanie", next:null, outcome:"great", outcomeText:"Szybkie przeprosiny + konkretne rozwiązanie (wymiana dania) + follow-up to pełny, profesjonalny cykl obsługi reklamacji. Gratisowy deser na koniec to prosty, ale zawsze skuteczny sposób na zamknięcie sytuacji pozytywnym akcentem." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Gość czuje się zlekceważony",
+        text: "Gość marszczy brwi, wyraźnie niezadowolony z odpowiedzi.",
+        voice: "\"Jestem pewien/pewna, że coś jest nie tak. Proszę o managera.\"",
+        choices: [
+          { t:"Koniec scenariusza — wzywasz managera, sytuacja eskaluje", next:null, outcome:"poor", outcomeText:"Podważanie oceny gościa co do jedzenia (nawet jeśli technicznie masz rację co do przepisu) rzadko kończy się dobrze — to kwestia percepcji i komfortu gościa, nie tylko faktów kulinarnych. Zawsze bezpieczniej przyjąć zgłoszenie poważnie i zaproponować rozwiązanie." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Niepewność gościa",
+        text: "Gość siedzi bez informacji, nie wiedząc czy dostanie coś w zamian, czy w ogóle ktoś się tym zajął.",
+        voice: null,
+        choices: [
+          { t:"Po chwili wracasz z informacją i propozycją rozwiązania", next:null, outcome:"ok", outcomeText:"Zabranie dania było słuszne, ale brak komunikacji w międzyczasie zostawia gościa w niepewności, co buduje frustrację. Nawet krótkie \"zaraz wracam z rozwiązaniem\" znacznie poprawia odbiór sytuacji." }
+        ]
+      }
+    }
+  },
+  {
+    id: "negocjacja-ceny",
+    title: "Gość negocjuje cenę dania",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "💰",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 3, przed zamówieniem",
+        text: "Gość przegląda menu i zauważa, że w innej restauracji podobna pizza kosztuje mniej.",
+        voice: "\"58 zł za Pizza Lipari? Czy jest jakaś zniżka, skoro biorę dwie sztuki?\"",
+        choices: [
+          { t:"Wyjaśniasz spokojnie, co wyróżnia danie (składniki, przygotowanie) i wspominasz o aktualnych promocjach dni tygodnia", next:"s2a" },
+          { t:"Od razu proponujesz własną, nieautoryzowaną zniżkę, żeby zamknąć temat", next:"s2b" },
+          { t:"Mówisz \"ceny są stałe, nie negocjujemy\", bez dalszego wyjaśnienia", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Gość otrzymuje kontekst",
+        text: "Gość słyszy o jakości składników (Grana Padano, prosciutto crudo) i przypadkowo trafia na informację o Happy Hours w poniedziałki/wtorki.",
+        voice: "\"A, nie wiedziałem o promocji. To może przyjdziemy w poniedziałek.\"",
+        choices: [
+          { t:"Koniec scenariusza — dziękujesz i zachęcasz do wizyty w promocyjnym terminie", next:null, outcome:"great", outcomeText:"Wyjaśnienie wartości dania + wskazanie legalnej, istniejącej promocji to najlepsze rozwiązanie — nie tracisz marży teraz, a jednocześnie budujesz dobre wrażenie i realną szansę na przyszłą wizytę." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Nieautoryzowana zniżka",
+        text: "Gość jest zadowolony, ale rachunek zamyka się poniżej marży, na którą pozwala restauracja, a Ty nie masz zgody managera na taki rabat.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Przyznawanie zniżek bez zgody przełożonego to poważny błąd niezależnie od dobrych intencji — to nie jest decyzja kelnera, tylko kierownictwa. Nawet jeśli gość jest zadowolony, restauracja traci kontrolę nad marżą." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Sucha odmowa",
+        text: "Gość czuje się zbyty, atmosfera przy stoliku robi się chłodna.",
+        voice: "\"Rozumiem, ale przynajmniej mogliście Państwo to jakoś wytłumaczyć...\"",
+        choices: [
+          { t:"Koniec scenariusza — dogadujesz się dopiero teraz, wyjaśniając wartość dania", next:null, outcome:"ok", outcomeText:"Ostatecznie sytuacja się rozwiązuje, ale sucha, pierwsza odmowa niepotrzebnie zepsuła nastrój. To samo wyjaśnienie podane od razu, spokojnie i z uśmiechem, zaoszczędziłoby napięcia." }
+        ]
+      }
+    }
+  },
+  {
+    id: "dwie-pary-budzet",
+    title: "Dwie pary, różne budżety przy jednym stoliku",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "👥",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 6, dwie pary razem",
+        text: "Jedna para zamawia od razu droższe pozycje i wino z wyższej półki, druga para wyraźnie waha się i przegląda tańsze opcje.",
+        voice: null,
+        choices: [
+          { t:"Pytasz obie pary osobno, dyskretnie, co by chcieli, bez porównywania ich wyborów", next:"s2a" },
+          { t:"Głośno podsumowujesz przy całym stoliku, ile kosztuje zamówienie pierwszej pary, sugerując, że druga para powinna wybrać podobnie", next:"s2b" },
+          { t:"Proponujesz jedno wspólne, uśrednione zamówienie dla całego stolika", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Dyskretne podejście",
+        text: "Obie pary czują się swobodnie, każda zamawia zgodnie ze swoim budżetem, bez presji.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — realizujesz zamówienia bez dalszych komentarzy o różnicach w wyborach", next:null, outcome:"great", outcomeText:"Dyskretne, indywidualne podejście do każdej pary szanuje różnice w budżecie i preferencjach, bez zawstydzania kogokolwiek przy wspólnym stole. To profesjonalny standard przy złożonych stolikach." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Niezręczna sytuacja",
+        text: "Druga para czuje się niekomfortowo, zamawia coś droższego niż planowała, żeby 'nie wypaść gorzej'.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Porównywanie zamówień przy stole tworzy presję społeczną i niekomfortową sytuację — nawet jeśli krótkoterminowo 'zwiększa sprzedaż', long-term szkodzi reputacji i zaufaniu do obsługi." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Zgadywanie zamiast pytania",
+        text: "Jedna z par nie jest zadowolona z narzuconego wyboru, wygląda na skrępowaną, ale nie protestuje głośno.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz i pytasz każdą parę osobno, co faktycznie chcieliby zamówić", next:null, outcome:"ok", outcomeText:"Próba uproszczenia sytuacji przez wspólne zamówienie pomija indywidualne preferencje i budżety — lepiej od początku zapytać każdą parę osobno, tak jak w najlepszej ścieżce tego scenariusza." }
+        ]
+      }
+    }
+  },
+  {
+    id: "gosc-stamtad",
+    title: "Stały gość vs nowy gość w tym samym czasie",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🔁",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Piątkowy wieczór, pełna sala",
+        text: "Masz jednocześnie stałego gościa, który przychodzi co tydzień i zawsze zamawia to samo, oraz nowy stolik, który pierwszy raz jest w Lipari i wygląda na niezdecydowany.",
+        voice: null,
+        choices: [
+          { t:"Poświęcasz chwilę nowemu stolikowi na krótkie wprowadzenie do karty, a stałego gościa obsługujesz sprawnie, bo znasz jego preferencje", next:"s2a" },
+          { t:"Skupiasz się głównie na stałym gościu, bo znacie się dobrze, a nowy stolik zostawiasz samemu sobie na dłużej", next:"s2b" },
+          { t:"Traktujesz oba stoliki identycznie, z tym samym, standardowym powitaniem i tempem", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Dobre rozłożenie uwagi",
+        text: "Nowy stolik czuje się dobrze przyjęty i zamawia więcej niż planował, doceniając wprowadzenie do karty. Stały gość jest zadowolony z szybkiej, sprawnej obsługi.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — kontynuujesz obsługę obu stolików z tym samym balansem", next:null, outcome:"great", outcomeText:"Dopasowanie stylu obsługi do potrzeb każdego gościa (nowy potrzebuje więcej wprowadzenia, stały ceni sprawność) to znak dojrzałej obsługi, która buduje lojalność obu grup gości." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Zaniedbany nowy gość",
+        text: "Nowy stolik czeka zbyt długo na propozycje, ostatecznie zamawia najprostsze, najtańsze pozycje z obawy przed dalszym czekaniem.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Nowi goście, którzy nie poczują się dobrze przyjęci przy pierwszej wizycie, rzadko wracają — a to oni mogą stać się przyszłymi stałymi gośćmi. Zaniedbanie ich na rzecz znajomej twarzy to krótkowzroczne podejście." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Zmarnowana okazja przy stałym gościu",
+        text: "Stały gość czuje się trochę zdziwiony formalnym, standardowym powitaniem, jakby obsługa nie pamiętała, że bywa tu regularnie.",
+        voice: "\"O, witam... jak zwykle, proszę.\"",
+        choices: [
+          { t:"Koniec scenariusza — poprawiasz się, nawiązując do jego zwykłego zamówienia", next:null, outcome:"ok", outcomeText:"Traktowanie każdego gościa identycznie brzmi sprawiedliwie w teorii, ale w praktyce stali goście oczekują odrobiny rozpoznania, a nowi — trochę więcej wprowadzenia. Zauważenie tej różnicy poprawia doświadczenie obu grup." }
+        ]
+      }
+    }
+  },
+  {
+    id: "blad-w-zamowieniu",
+    title: "Kuchnia przygotowała złe danie",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🍽️",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Wydawka, danie gotowe do podania",
+        text: "Odbierasz danie z kuchni i zauważasz, że to Risotto con Gamberi, a gość zamawiał Risotto con Tartufo.",
+        voice: null,
+        choices: [
+          { t:"Wracasz do kuchni, zgłaszasz pomyłkę, prosisz o właściwe danie zanim cokolwiek podasz gościowi", next:"s2a" },
+          { t:"Podajesz danie tak jak jest, licząc że gość się nie zorientuje", next:"s2b" },
+          { t:"Podajesz danie i mówisz gościowi, że to 'zmiana od kuchni', bez wyjaśnienia pomyłki", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Szybka korekta",
+        text: "Kuchnia poprawia błąd, a Ty wracasz do gościa z krótkim wyjaśnieniem i przeprosinami za chwilę opóźnienia.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — informujesz gościa transparentnie i ewentualnie proponujesz mały gest przeprosin (np. kieliszek wina)", next:null, outcome:"great", outcomeText:"Złapanie błędu przed podaniem to najlepszy możliwy scenariusz — gość nigdy nie musi wiedzieć o pomyłce w kuchni, a jeśli i tak informujesz go transparentnie o krótkim opóźnieniu, budujesz zaufanie zamiast go ryzykować." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Gość zauważa pomyłkę",
+        text: "Gość zauważa różnicę i jest wyraźnie niezadowolony, że próbowano to przemilczeć.",
+        voice: "\"To nie jest to, co zamawiałem/am. I chyba Pan/Pani o tym wiedział/a?\"",
+        choices: [
+          { t:"Koniec scenariusza — przepraszasz i wymieniasz danie", next:null, outcome:"poor", outcomeText:"Świadome podanie złego dania licząc na to, że gość się nie zorientuje, to poważny błąd etyczny, który przy wykryciu (a zwykle jest wykrywane) niszczy zaufanie znacznie bardziej niż sama pomyłka kuchni." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Niejasna komunikacja",
+        text: "Gość jest zdezorientowany, bo nie wie, czy to jego wina (że źle zapamiętał zamówienie), czy błąd restauracji.",
+        voice: "\"Zmiana? Nie prosiłem/am o żadną zmianę...\"",
+        choices: [
+          { t:"Koniec scenariusza — wyjaśniasz szczerze, że to pomyłka kuchni i wymieniasz danie", next:null, outcome:"ok", outcomeText:"Unikanie przyznania się do błędu poprzez niejasne tłumaczenia zwykle tylko wydłuża i komplikuje sytuację. Szczera, krótka informacja o pomyłce od razu byłaby prostsza i bardziej profesjonalna." }
+        ]
+      }
+    }
+  },
+  {
+    id: "spoznione-danie",
+    title: "Danie się mocno spóźnia",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "⏳",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · 25 minut od zamówienia, kuchnia opóźniona",
+        text: "Gość czeka już znacznie dłużej niż zwykle na swoje danie główne, kuchnia jest przeciążona w piątkowy wieczór.",
+        voice: "\"Przepraszam, ale zamawialiśmy jakiś czas temu — długo to jeszcze potrwa?\"",
+        choices: [
+          { t:"Sprawdzasz status w kuchni, wracasz z konkretną informacją i przepraszasz za opóźnienie", next:"s2a" },
+          { t:"Mówisz \"zaraz będzie\", nie sprawdzając faktycznie w kuchni", next:"s2b" },
+          { t:"Ignorujesz pytanie i mówisz, że kuchnia jest zajęta, więc nic nie możesz zrobić", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Konkretna informacja",
+        text: "Wracasz z informacją \"jeszcze około 8 minut\" i proponujesz coś drobnego na czas oczekiwania.",
+        voice: "\"Dobrze, dziękuję za informację, to nie jest problem.\"",
+        choices: [
+          { t:"Koniec scenariusza — dotrzymujesz podanego czasu i wracasz z daniem możliwie punktualnie", next:null, outcome:"great", outcomeText:"Konkretna informacja o czasie + drobny gest (np. dodatkowy chleb) skutecznie łagodzi frustrację czekania. Ludzie źle znoszą niepewność, dobrze znoszą jasność, nawet jeśli wiadomość to 'jeszcze trochę poczekacie'." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Pusta obietnica",
+        text: "Mija kolejnych 10 minut bez dania, gość jest coraz bardziej zirytowany niedotrzymaną obietnicą.",
+        voice: "\"Mówił/a Pan/Pani, że zaraz będzie, minęło już 10 minut...\"",
+        choices: [
+          { t:"Koniec scenariusza — w końcu sprawdzasz status i przepraszasz za nieprecyzyjną informację", next:null, outcome:"poor", outcomeText:"Obietnica 'zaraz' bez faktycznego sprawdzenia w kuchni to ryzykowna taktyka — jeśli się nie sprawdzi, frustracja gościa jest jeszcze większa niż gdyby usłyszał szczerą informację od razu." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Brak empatii",
+        text: "Gość czuje się zignorowany, mimo że problem faktycznie leży po stronie przeciążonej kuchni, a nie kelnera.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz po chwili z przeprosinami i konkretną informacją", next:null, outcome:"ok", outcomeText:"Nawet jeśli opóźnienie nie jest winą kelnera, sposób komunikacji o nim ma ogromne znaczenie. Krótkie przeprosiny i sprawdzenie statusu kosztują niewiele czasu, a znacznie poprawiają odbiór sytuacji przez gościa." }
+        ]
+      }
+    }
+  },
+  {
+    id: "rodzina-z-dziecmi",
+    title: "Rodzina z małymi dziećmi",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "👨‍👩‍👧",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 8, rodzina z dwójką małych dzieci",
+        text: "Rodzice wyglądają na trochę zestresowanych, dzieci są niecierpliwe jeszcze przed złożeniem zamówienia.",
+        voice: null,
+        choices: [
+          { t:"Proponujesz coś szybkiego dla dzieci na start (np. chleb, mały poczęstunek) i pytasz rodziców o ich zamówienie spokojnie, bez pośpiechu", next:"s2a" },
+          { t:"Traktujesz stolik dokładnie tak jak każdy inny, bez dodatkowych sugestii dla rodziny z dziećmi", next:"s2b" },
+          { t:"Śpieszysz rodziców z decyzją, bo dzieci są niecierpliwe", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Rodzice doceniają wsparcie",
+        text: "Dzieci są zajęte, rodzice mogą spokojnie przejrzeć menu i zamawiają więcej niż planowali, w tym deser dla dzieci.",
+        voice: "\"Dziękujemy, to naprawdę pomogło.\"",
+        choices: [
+          { t:"Koniec scenariusza — kontynuujesz obsługę w tym samym, spokojnym tempie", next:null, outcome:"great", outcomeText:"Zauważenie kontekstu (rodzina z małymi dziećmi) i zaoferowanie praktycznego rozwiązania buduje wdzięczność rodziców, którzy odwdzięczają się większym zamówieniem i chęcią powrotu." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Rosnący stres przy stoliku",
+        text: "Dzieci stają się coraz bardziej niespokojne, rodzice zamawiają w pośpiechu byle co, żeby szybciej zakończyć wizytę.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Brak dostosowania tempa obsługi do sytuacji rodziny z małymi dziećmi prowadzi do stresującej wizyty dla gości i niższego zamówienia niż gdyby czuli się komfortowo." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Presja czasowa na rodziców",
+        text: "Rodzice czują się pospieszani, zamawiają byle co, żeby nie przedłużać niekomfortowej sytuacji.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz z propozycją czegoś dla dzieci, żeby odciążyć sytuację", next:null, outcome:"ok", outcomeText:"Dobra intencja (przyspieszenie ze względu na dzieci) w złej formie (presja na rodziców) daje gorszy efekt niż spokojne zaoferowanie praktycznego rozwiązania od samego początku." }
+        ]
+      }
+    }
+  },
+  {
+    id: "reklamacja-online",
+    title: "Gość grozi negatywną opinią w internecie",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "⭐",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 2, po drobnym błędzie w zamówieniu",
+        text: "Zamówienie było minimalnie opóźnione. Gość jest wyraźnie poirytowany bardziej niż sama sytuacja by uzasadniała.",
+        voice: "\"To niedopuszczalne. Napiszę o tym negatywną opinię na Google.\"",
+        choices: [
+          { t:"Zachowujesz spokój, przepraszasz konkretnie za opóźnienie i pytasz, jak możesz to naprawić w trakcie tej wizyty", next:"s2a" },
+          { t:"Zaczynasz się tłumaczyć i przekonywać, że opinia byłaby niesprawiedliwa", next:"s2b" },
+          { t:"Mówisz \"to Pana/Pani prawo\", bez próby rozwiązania sytuacji", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Spokojna reakcja",
+        text: "Gość trochę się uspokaja, widząc że traktujesz sprawę poważnie i szukasz rozwiązania, a nie się kłócisz.",
+        voice: "\"No dobrze, doceniam że Pan/Pani próbuje to naprawić.\"",
+        choices: [
+          { t:"Koniec scenariusza — proponujesz konkretny gest (np. rabat na deser) i kończysz wizytę na dobrej nucie", next:null, outcome:"great", outcomeText:"Groźba negatywnej opinii często wynika z poczucia niesłyszenia, nie tylko z samego problemu. Spokojna reakcja i konkretna propozycja rozwiązania rozbraja napięcie skuteczniej niż obrona czy ignorowanie groźby." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Eskalacja przez tłumaczenie się",
+        text: "Gość czuje, że jego frustracja jest podważana, staje się jeszcze bardziej zdeterminowany, by zostawić negatywną opinię.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Przekonywanie gościa, że nie ma racji, prawie nigdy nie działa w momencie frustracji — to tylko potwierdza mu, że nie jest słuchany, i wzmacnia chęć \"udowodnienia\" swojej racji publicznie." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Bierna rezygnacja",
+        text: "Gość zostaje z poczuciem, że nikogo nie obchodzi jego niezadowolenie, co jeszcze bardziej utwierdza go w zamiarze napisania opinii.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz z próbą naprawienia sytuacji zanim gość wyjdzie", next:null, outcome:"ok", outcomeText:"Bierna zgoda na groźbę bez próby rozwiązania problemu to stracona szansa — nawet trudną sytuację często da się zamienić w pozytywne zakończenie wizyty konkretnym gestem." }
+        ]
+      }
+    }
+  },
+  {
+    id: "randka",
+    title: "Para na pierwszej randce",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "💐",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 5, wieczorna atmosfera",
+        text: "Widać, że to pierwsza randka — para jest lekko zestresowana, dużo ciszy przy stole, obaj często zerkają w menu, jakby szukali w nim wsparcia.",
+        voice: null,
+        choices: [
+          { t:"Podpowiadasz coś do wspólnego podzielenia się (np. Tagliere) i dyskretnie odchodzisz, dając im przestrzeń", next:"s2a" },
+          { t:"Zostajesz przy stoliku dłużej niż zwykle, żeby pomóc rozładować ciszę rozmową", next:"s2b" },
+          { t:"Traktujesz stolik zupełnie standardowo, bez wyczucia sytuacji", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Naturalny gest",
+        text: "Wspólne danie do podzielenia daje im temat do rozmowy i naturalny pretekst do interakcji, atmosfera się rozluźnia.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz w odpowiednich odstępach czasu, nie za często", next:null, outcome:"great", outcomeText:"Wyczucie subtelnego kontekstu (pierwsza randka, stres) i zaproponowanie czegoś, co naturalnie ułatwia parze wspólne doświadczenie, to przykład obsługi wykraczającej poza samo przyjęcie zamówienia." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Nadmierna obecność",
+        text: "Para czuje się skrępowana przedłużającą się obecnością kelnera przy stoliku, co pogłębia niezręczność zamiast ją łagodzić.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Dobra intencja (pomoc w rozładowaniu napięcia) w złej formie (zbyt długa obecność przy stoliku) pogarsza sytuację — intymne momenty randki wymagają dyskrecji, nie towarzystwa kelnera." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Zmarnowana okazja",
+        text: "Para radzi sobie sama, ale atmosfera pozostaje sztywna przez większość wieczoru.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — przy deserze proponujesz coś do wspólnego podzielenia się", next:null, outcome:"ok", outcomeText:"Zauważenie kontekstu randki później niż na początku wciąż daje pewną wartość, ale wcześniejsza, subtelna pomoc (np. wspólne danie) mogłaby poprawić atmosferę na cały wieczór, nie tylko na deser." }
+        ]
+      }
+    }
+  },
+  {
+    id: "duza-grupa-biznesowa",
+    title: "Lunch biznesowy, klient obserwuje szefa",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "💼",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 12, spotkanie biznesowe",
+        text: "Grupa czterech osób w garniturach, wyraźnie ważne spotkanie. Jedna osoba przy stole zachowuje się jak gospodarz/szef i zamawia w imieniu części grupy.",
+        voice: null,
+        choices: [
+          { t:"Kierujesz uwagę głównie do gospodarza spotkania, ale potwierdzasz zamówienia każdej osoby indywidualnie", next:"s2a" },
+          { t:"Pytasz każdą osobę o zamówienie z osobna, ignorując rolę gospodarza przy stole", next:"s2b" },
+          { t:"Przyspieszasz obsługę, zakładając że biznesowy lunch musi być szybki, bez pytania o preferencje", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Wyważone podejście",
+        text: "Gospodarz spotkania czuje się doceniony w swojej roli, a goście czują, że ich indywidualne wybory też się liczą.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — kontynuujesz dyskretną, sprawną obsługę bez zbędnych przerywań rozmowy biznesowej", next:null, outcome:"great", outcomeText:"Rozpoznanie dynamiki społecznej przy stole (kto jest gospodarzem) przy jednoczesnym uwzględnieniu wszystkich gości to wyczucie, które buduje profesjonalne wrażenie — istotne przy lunchach biznesowych, gdzie reputacja firmy też jest 'na stole'." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Zaburzona dynamika",
+        text: "Gospodarz spotkania czuje się lekko pominięty w swojej roli, co wprowadza niepotrzebne zamieszanie w tempo spotkania.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"ok", outcomeText:"Traktowanie wszystkich gości identycznie jest sprawiedliwe, ale przy biznesowych spotkaniach z wyraźną hierarchią czy rolą gospodarza, odrobina wyczucia społecznej dynamiki poprawia doświadczenie całej grupy." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Założenie bez pytania",
+        text: "Grupa czuje się pospieszana, mimo że wcale nie byli aż tak ograniczeni czasowo, a mieli ochotę np. na kawę po posiłku.",
+        voice: "\"Nie musi Pan/Pani nas tak poganiać, mamy jeszcze chwilę.\"",
+        choices: [
+          { t:"Koniec scenariusza — dostosowujesz tempo do faktycznych potrzeb grupy", next:null, outcome:"poor", outcomeText:"Zakładanie z góry, czego gość potrzebuje (szybko, bo biznesowo) zamiast zapytania, to częsty błąd — lepiej zapytać wprost o tempo obsługi, niż zgadywać na podstawie stereotypu." }
+        ]
+      }
+    }
+  },
+  {
+    id: "gosc-vip",
+    title: "Nierozpoznany gość VIP / influencer",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "📸",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 9, gość robi zdjęcia jedzenia",
+        text: "Zauważasz, że gość dokładnie fotografuje każde danie i notuje coś w telefonie — może to być food blogger albo po prostu ktoś, kto lubi Instagram.",
+        voice: null,
+        choices: [
+          { t:"Obsługujesz gościa dokładnie tak samo profesjonalnie jak każdego innego, bez zmiany zachowania", next:"s2a" },
+          { t:"Zaczynasz zachowywać się wyraźnie inaczej, licząc na dobrą wzmiankę w mediach społecznościowych", next:"s2b" },
+          { t:"Ignorujesz stolik, zakładając że 'i tak dobrze im idzie'", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Konsekwentny standard",
+        text: "Gość doświadcza dokładnie tego samego wysokiego standardu obsługi, co każdy inny gość — i to właśnie widać na jego zdjęciach/w opinii.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — kontynuujesz normalną, wysoką jakość obsługi", next:null, outcome:"great", outcomeText:"Najlepsza strategia wobec potencjalnego 'gościa z wpływem' to po prostu utrzymanie tego samego wysokiego standardu, co zawsze. Nierówne traktowanie gości (lepsze dla 'ważnych') łatwo wychodzi na jaw i szkodzi wiarygodności marki." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Widoczna nierówność",
+        text: "Inni goście przy sąsiednich stolikach zauważają wyraźną różnicę w poziomie obsługi, co budzi ich niezadowolenie.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Nierówne traktowanie gości na podstawie domniemanego wpływu w mediach społecznościowych jest ryzykowne i nieautentyczne — najbardziej wiarygodne opinie/zdjęcia to te pokazujące naturalny, konsekwentny standard, nie sztucznie podkręconą obsługę." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Zaniedbanie",
+        text: "Gość czeka dłużej niż inni na dolewkę wody czy odpowiedź na pytanie, co może wpłynąć na jego relację z wizyty, niezależnie od tego, kim faktycznie jest.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz do standardowego poziomu uwagi", next:null, outcome:"ok", outcomeText:"Zakładanie, że ktoś 'sobie poradzi' bez standardowej uwagi, to zawsze ryzyko, niezależnie od tego, czy dana osoba ma wpływ w mediach społecznościowych czy nie — każdy gość zasługuje na ten sam poziom staranności." }
+        ]
+      }
+    }
+  },
+  {
+    id: "przepelniona-sala",
+    title: "Sala przepełniona, gość czeka na stolik",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🚪",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Wejście, sobotni wieczór",
+        text: "Wszystkie stoliki zajęte, przy wejściu czeka już kilka osób bez rezerwacji, w tym gość, który wyraźnie się irytuje czasem oczekiwania.",
+        voice: "\"Czekamy już 20 minut, ile jeszcze?\"",
+        choices: [
+          { t:"Podajesz realistyczny szacowany czas i proponujesz miejsce przy barze na drinka w oczekiwaniu", next:"s2a" },
+          { t:"Mówisz \"zaraz, zaraz\" bez konkretnej informacji, żeby uniknąć konfrontacji", next:"s2b" },
+          { t:"Sugerujesz, żeby przyszli innym razem, skoro nie chcą czekać", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Konkretna propozycja",
+        text: "Goście chętnie przechodzą do baru, zamawiają drinki, czas oczekiwania mija przyjemniej, a Ty zyskujesz dodatkową sprzedaż.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — informujesz ich, gdy tylko stolik będzie gotowy", next:null, outcome:"great", outcomeText:"Konkretny czas + praktyczna alternatywa (bar) zamienia frustrujące oczekiwanie w przyjemny moment i dodatkową sprzedaż — to rozwiązanie korzystne dla gościa i dla restauracji jednocześnie." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Rosnąca frustracja",
+        text: "Brak konkretnej informacji sprawia, że goście stają się coraz bardziej niecierpliwi i część z nich rezygnuje, wychodząc do innej restauracji.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Unikanie podania konkretnej informacji o czasie oczekiwania z obawy przed konfrontacją zwykle prowadzi do gorszego efektu — niepewność frustruje bardziej niż szczera, nawet niewygodna informacja." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Utracony gość",
+        text: "Goście czują się odprawieni i wychodzą rozczarowani, prawdopodobnie nie wracając w przyszłości.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — próbujesz jeszcze zaproponować miejsce przy barze zanim wyjdą", next:null, outcome:"poor", outcomeText:"Sugerowanie gościom, żeby po prostu przyszli innym razem, to rezygnacja z próby rozwiązania sytuacji — nawet przy pełnej sali zawsze warto zaproponować alternatywę (bar, krótkie oczekiwanie z drinkiem) zanim gość zdecyduje się wyjść." }
+        ]
+      }
+    }
+  },
+  {
+    id: "niejasne-zamowienie",
+    title: "Gość zamawia niejasno, dopowiada w trakcie",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "❓",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 1, składanie zamówienia",
+        text: "Gość mówi szybko i niejasno, wymieniając kilka dań na raz, zmieniając zdanie w trakcie mówienia.",
+        voice: "\"To znaczy, chcę tę pizzę, a nie, może jednak makaron, no i sałatkę też, ale bez cebuli, chyba...\"",
+        choices: [
+          { t:"Powtarzasz spokojnie zamówienie krok po kroku, potwierdzając każdy element, zanim przejdziesz dalej", next:"s2a" },
+          { t:"Zapisujesz to, co usłyszałeś/aś jako pierwsze, bez potwierdzania, żeby nie przedłużać", next:"s2b" },
+          { t:"Poganiasz gościa, żeby szybciej się zdecydował, bo czekają inne stoliki", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Potwierdzone zamówienie",
+        text: "Gość doprecyzowuje swój wybór, dzięki potwierdzeniu krok po kroku unikacie pomyłki przy realizacji.",
+        voice: "\"Tak, dokładnie tak, dziękuję za cierpliwość.\"",
+        choices: [
+          { t:"Koniec scenariusza — przekazujesz precyzyjne zamówienie do kuchni", next:null, outcome:"great", outcomeText:"Powtórzenie niejasnego zamówienia krok po kroku to prosty nawyk, który zapobiega pomyłkom, zwrotom dań i niezadowoleniu — szczególnie ważny przy gościach, którzy sami nie są do końca zdecydowani." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Błąd w zamówieniu",
+        text: "Danie przychodzi niezgodne z tym, czego faktycznie chciał gość, trzeba je wymieniać, co kosztuje więcej czasu niż potwierdzenie na starcie.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Pominięcie potwierdzenia niejasnego zamówienia 'dla oszczędności czasu' zwykle kończy się odwrotnym efektem — błąd i konieczna wymiana dania kosztują znacznie więcej czasu niż jedno dodatkowe pytanie potwierdzające." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Presja pogarsza sytuację",
+        text: "Gość czuje się pospieszany, przez co jeszcze bardziej się myli i gubi w swoim własnym zamówieniu.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — zwalniasz tempo i potwierdzasz zamówienie spokojnie", next:null, outcome:"ok", outcomeText:"Poganianie niezdecydowanego gościa zwykle pogarsza, nie poprawia sytuację — spokojne, ustrukturyzowane podejście (jedno danie na raz, potwierdzenie) jest szybsze w efekcie końcowym niż presja czasowa." }
+        ]
+      }
+    }
+  },
+  {
+    id: "alergia-niezglosza",
+    title: "Gość wspomina o alergii już po zamówieniu",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "⚠️",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 4, zamówienie już przekazane do kuchni",
+        text: "Chwilę po złożeniu zamówienia gość mimochodem wspomina o alergii, która może dotyczyć jednego z zamówionych dań.",
+        voice: "\"A, tak w ogóle, mam uczulenie na orzechy — to chyba nie ma orzechów w tym risotto?\"",
+        choices: [
+          { t:"Natychmiast sprawdzasz skład dania w kuchni, zanim zostanie przygotowane lub podane", next:"s2a" },
+          { t:"Zapewniasz gościa 'na oko', że raczej nie ma orzechów, bez sprawdzania", next:"s2b" },
+          { t:"Ignorujesz temat, zakładając że gość by wcześniej powiedział, gdyby to było poważne", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Sprawdzone bezpieczeństwo",
+        text: "Kuchnia potwierdza skład i, jeśli trzeba, dostosowuje danie lub proponuje bezpieczną alternatywę.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — informujesz gościa z pewnością, co dokładnie znajduje się w daniu", next:null, outcome:"great", outcomeText:"Alergie pokarmowe to jedyny temat na sali, przy którym 'chyba' czy 'na oko' nigdy nie wystarczy — zawsze trzeba sprawdzić fakty w kuchni, niezależnie od tego, jak bardzo to spowalnia obsługę. To kwestia bezpieczeństwa, nie tylko jakości." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Ryzykowne zapewnienie",
+        text: "Podajesz zapewnienie bez sprawdzenia — w tym konkretnym przypadku danie faktycznie nie zawiera orzechów, ale nie miałeś/aś tej pewności w momencie odpowiedzi.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Nawet jeśli tym razem się udało, odpowiadanie na pytania o alergeny 'na oko' bez sprawdzenia w kuchni to poważne ryzyko zdrowotne dla gościa i prawne dla restauracji. To jedyny temat, przy którym zawsze trzeba mieć stuprocentową pewność." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Zignorowane ryzyko",
+        text: "Temat zostaje bez odpowiedzi, a danie trafia do gościa bez weryfikacji składu.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz i sprawdzasz zanim danie zostanie podane", next:null, outcome:"poor", outcomeText:"Zignorowanie wzmianki o alergii, nawet jeśli brzmiała 'mimochodem', to niedopuszczalne ryzyko. Każda wzmianka o alergenie wymaga natychmiastowej weryfikacji w kuchni, bez wyjątków." }
+        ]
+      }
+    }
+  },
+  {
+    id: "grupa-swietuje-glosno",
+    title: "Głośna grupa przeszkadza innym gościom",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🎉",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 11, huczne urodziny",
+        text: "Grupa świętująca urodziny jest coraz głośniejsza, a sąsiedni stolik z parą na spokojnej kolacji zaczyna wyglądać na zirytowany.",
+        voice: null,
+        choices: [
+          { t:"Podchodzisz do świętującej grupy z uśmiechem, dołączasz do atmosfery, ale delikatnie prosisz o odrobinę ciszej ze względu na innych gości", next:"s2a" },
+          { t:"Ignorujesz sytuację, licząc że sama się rozwiąże", next:"s2b" },
+          { t:"Ostro upominasz świętującą grupę, żeby się uciszyła", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Delikatna interwencja",
+        text: "Grupa przyjmuje uwagę dobrze, bo podana jest w przyjaznym tonie, ścisza się nieco, a para obok czuje się zaopiekowana, widząc reakcję obsługi.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — sprawdzasz jeszcze raz za jakiś czas, czy sytuacja jest w porządku dla obu stron", next:null, outcome:"great", outcomeText:"Życzliwa, ale konkretna interwencja chroni doświadczenie obu grup gości — świętujących i tych szukających spokoju — bez psucia nikomu wieczoru. To pokazuje, że restauracja dba o komfort wszystkich, nie tylko głośniejszej grupy." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Eskalacja niezadowolenia",
+        text: "Para przy sąsiednim stoliku prosi o rachunek wcześniej niż planowała, wyraźnie niezadowolona z poziomu hałasu.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Ignorowanie rosnącego konfliktu między gośćmi rzadko rozwiązuje się samo — zwykle kończy się utratą (przynajmniej częściowo) zadowolenia jednej z grup, a czasem obu, gdy sytuacja i tak w końcu wymaga interwencji, tylko później i w gorszej atmosferze." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Zepsuta atmosfera urodzin",
+        text: "Świętująca grupa czuje się skarcona i zawstydzona, co psuje nastrój urodzinowego wieczoru, mimo że intencja (spokój dla innych gości) była słuszna.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — łagodzisz sytuację, przepraszając za ton wcześniejszej uwagi", next:null, outcome:"ok", outcomeText:"Sama potrzeba interwencji była słuszna, ale ostry ton zamienia rozsądną prośbę w niezręczną, przykrą sytuację dla świętującej grupy. Ten sam efekt (ciszej) można osiągnąć znacznie łagodniejszym tonem, bez psucia komuś wieczoru." }
+        ]
+      }
+    }
+  },
+  {
+    id: "zwrot-wina",
+    title: "Gość chce zwrócić otwartą butelkę wina",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🍾",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 6, chwilę po nalaniu pierwszego kieliszka",
+        text: "Gość skosztował wina i twierdzi, że mu nie smakuje — nie z powodu wady wina (korek, utlenienie), tylko po prostu 'nie taki smak, jakiego się spodziewał'.",
+        voice: "\"To wino jakieś dziwne, nie takie jak myślałem. Można zamienić?\"",
+        choices: [
+          { t:"Pytasz spokojnie, co dokładnie nie pasuje, i proponujesz inną pozycję z karty, dopasowaną do opisu preferencji", next:"s2a" },
+          { t:"Odmawiasz wprost, mówiąc że wino jest już otwarte, więc nie podlega zwrotowi", next:"s2b" },
+          { t:"Bez pytania wymieniasz wino na inne, bez próby zrozumienia, co faktycznie nie pasowało", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Zrozumienie potrzeby",
+        text: "Gość opisuje, że oczekiwał czegoś słodszego, co pozwala precyzyjnie dobrać inną pozycję z karty win.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — proponujesz konkretne wino dopasowane do preferencji i sprawdzasz, czy tym razem trafione", next:null, outcome:"great", outcomeText:"Rozróżnienie między wadą wina a zwykłym niedopasowaniem do gustu gościa jest ważne — w tym drugim przypadku najlepszym rozwiązaniem jest zrozumienie preferencji i pomoc w wyborze czegoś bardziej odpowiedniego, co buduje zaufanie zamiast konfliktu o zasady zwrotu." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Sztywne trzymanie się zasady",
+        text: "Gość czuje się potraktowany nieelastycznie, mimo że nie chodziło o próbę oszustwa, tylko o szczery brak dopasowania smaku.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Formalna zasada 'otwarte wino nie podlega zwrotowi' ma sens przy próbach nadużyć, ale sztywne trzymanie się jej przy szczerym niedopasowaniu smaku kosztuje więcej w postaci niezadowolenia gościa, niż warta jest wartość jednego kieliszka." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Zgadywanie zamiast zrozumienia",
+        text: "Nowe wino również nie do końca odpowiada gościowi, bo nie zapytano wcześniej, czego właściwie szukał.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — dopytujesz teraz, czego dokładnie gość oczekuje", next:null, outcome:"ok", outcomeText:"Wymiana wina bez zrozumienia przyczyny niezadowolenia to działanie na chybił trafił — łatwo trafić po raz drugi w złą pozycję. Krótkie pytanie o preferencje od razu oszczędza czas i zwiększa szansę na trafiony wybór za pierwszym razem." }
+        ]
+      }
+    }
+  },
+  {
+    id: "podzial-rachunku",
+    title: "Spór o podział rachunku między gośćmi",
+    sub: "Scenariusz · 3 decyzje",
+    icon: "🧾",
+    start: "s1",
+    scenes: {
+      s1: {
+        label: "SCENA 1 · Stolik 8, koniec kolacji w gronie znajomych",
+        text: "Grupa pięciu osób prosi o rachunek. Dwie osoby zaczynają się spierać, kto ile powinien zapłacić, bo zamówienia były bardzo różne (jedna osoba brała drogie wino, inna tylko sałatkę).",
+        voice: "\"Możecie po prostu podzielić rachunek na pięć równych części?\"",
+        choices: [
+          { t:"Pytasz spokojnie całą grupę, czy wszyscy zgadzają się na równy podział, zanim to zrobisz", next:"s2a" },
+          { t:"Od razu dzielisz rachunek na równe części, bo tak powiedziała jedna osoba", next:"s2b" },
+          { t:"Mówisz grupie, że muszą się sami dogadać, i zostawiasz ich samych z tym problemem na dłużej", next:"s2c" }
+        ]
+      },
+      s2a: {
+        label: "SCENA 2 · Potwierdzona zgoda grupy",
+        text: "Jedna osoba, która zamawiała tylko sałatkę, grzecznie zaznacza, że wolałaby zapłacić za swoje zamówienie osobno. Dzięki pytaniu wychwytujesz to od razu.",
+        voice: "\"W sumie ja bym wolał/a zapłacić tylko za swoje, jeśli to możliwe.\"",
+        choices: [
+          { t:"Koniec scenariusza — sprawnie rozdzielasz rachunek zgodnie z tym, czego chce grupa, unikając niezręczności", next:null, outcome:"great", outcomeText:"Upewnienie się, że cała grupa faktycznie zgadza się na sposób podziału, zanim się go wykona, zapobiega niezręcznym sytuacjom i potencjalnym konfliktom między znajomymi już po Waszej interwencji. To drobny krok, który chroni relacje gości między sobą." }
+        ]
+      },
+      s2b: {
+        label: "SCENA 2 · Niezadowolenie części grupy",
+        text: "Osoba, która zamawiała tylko sałatkę, czuje się niesprawiedliwie obciążona kosztem cudzego drogiego wina, atmosfera przy stole robi się napięta.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza", next:null, outcome:"poor", outcomeText:"Wykonanie podziału rachunku na podstawie słowa jednej osoby, bez potwierdzenia z całą grupą, ryzykuje wywołanie konfliktu między znajomymi już po Waszej interwencji — co jest złym doświadczeniem, nawet jeśli technicznie zrobiliście dokładnie to, o co poproszono." }
+        ]
+      },
+      s2c: {
+        label: "SCENA 2 · Przedłużający się spór",
+        text: "Spór trwa dłużej niż powinien, inni goście przy sąsiednich stolikach zauważają zamieszanie, a grupa czuje się pozostawiona bez pomocy w niezręcznej sytuacji.",
+        voice: null,
+        choices: [
+          { t:"Koniec scenariusza — wracasz z pytaniem, żeby pomóc sprawnie rozwiązać podział", next:null, outcome:"ok", outcomeText:"Spory o pieniądze między znajomymi są niezręczne, ale to właśnie moment, w którym sprawna, neutralna pomoc obsługi (np. pokazanie rachunku pozycja po pozycji) rozwiązuje sytuację szybciej niż zostawienie gości samym sobie." }
+        ]
+      }
+    }
+  }
+];
+
+/* ================== STAN APLIKACJI ================== */
+
+const STORAGE_KEY = "lipari_quiz_state_v1";
+let state = loadState();
+let currentModule = null;
+let currentQIndex = 0;
+let currentModuleCorrect = 0;
+let answeredCurrent = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { completed: {}, totalScore: 0, name: "" };
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+/* ================== RENDER: HOME ================== */
+
+function renderHome(){
+  document.getElementById("totalScoreNum").textContent = state.totalScore;
+  const list = document.getElementById("moduleList");
+  list.innerHTML = "";
+  MODULES.forEach(mod=>{
+    const done = state.completed[mod.id];
+    const card = document.createElement("div");
+    card.className = "module-card" + (done ? " done" : "");
+    card.innerHTML = `
+      <div class="module-icon">${mod.icon}</div>
+      <div class="module-text">
+        <div class="m-title">${mod.title}</div>
+        <div class="m-sub">${mod.sub}${done ? " · najlepszy wynik: "+done.best+"/"+mod.questions.length : ""}</div>
+      </div>
+      ${done ? '<div class="module-check">✓</div>' : '<div class="module-arrow">→</div>'}
+    `;
+    card.addEventListener("click", ()=> startModule(mod.id));
+    list.appendChild(card);
+  });
+
+  const sList = document.getElementById("scenarioList");
+  sList.innerHTML = "";
+  SCENARIOS.forEach(sc=>{
+    const done = state.completedScenarios && state.completedScenarios[sc.id];
+    const card = document.createElement("div");
+    card.className = "module-card" + (done ? " done" : "");
+    const bestLabel = done ? " · najlepszy wynik: " + labelForOutcome(done.best) : "";
+    card.innerHTML = `
+      <div class="module-icon">${sc.icon}</div>
+      <div class="module-text">
+        <div class="m-title">${sc.title}</div>
+        <div class="m-sub">${sc.sub}${bestLabel}</div>
+      </div>
+      ${done ? '<div class="module-check">✓</div>' : '<div class="module-arrow">→</div>'}
+    `;
+    card.addEventListener("click", ()=> startScenario(sc.id));
+    sList.appendChild(card);
+  });
+}
+
+function labelForOutcome(o){
+  if(o==="great") return "trafnie";
+  if(o==="ok") return "częściowo";
+  return "do poprawy";
+}
+
+/* ================== QUIZ FLOW ================== */
+
+function startModule(id){
+  currentModule = MODULES.find(m=>m.id===id);
+  currentQIndex = 0;
+  currentModuleCorrect = 0;
+  showScreen("quiz");
+  renderQuestion();
+}
+
+function renderProgress(){
+  const track = document.getElementById("progressTrack");
+  track.innerHTML = "";
+  currentModule.questions.forEach((q,i)=>{
+    const dot = document.createElement("div");
+    dot.className = "progress-dot";
+    if(i < currentQIndex) dot.classList.add("filled");
+    if(i === currentQIndex) dot.classList.add("current");
+    dot.innerHTML = "<i></i>";
+    track.appendChild(dot);
+  });
+}
+
+function renderQuestion(){
+  answeredCurrent = false;
+  renderProgress();
+  const q = currentModule.questions[currentQIndex];
+  document.getElementById("qModuleTag").textContent = currentModule.title.toUpperCase();
+  const ctxEl = document.getElementById("qContext");
+  if(q.context){
+    ctxEl.textContent = q.context;
+    ctxEl.classList.remove("hidden");
+  } else {
+    ctxEl.classList.add("hidden");
+  }
+  document.getElementById("qText").textContent = q.text;
+
+  const optsEl = document.getElementById("qOptions");
+  optsEl.innerHTML = "";
+  // shuffle display order but keep correctness mapping
+  const shuffled = q.options.map((o,i)=>({...o, _i:i})).sort(()=>Math.random()-0.5);
+  shuffled.forEach(opt=>{
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerHTML = opt.t;
+    btn.addEventListener("click", ()=> selectAnswer(btn, opt, shuffled, optsEl));
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById("qFeedback").className = "feedback";
+  document.getElementById("nextBtn").className = "next-btn";
+}
+
+function selectAnswer(btn, opt, allOpts, optsEl){
+  if(answeredCurrent) return;
+  answeredCurrent = true;
+
+  const buttons = optsEl.querySelectorAll(".option");
+  buttons.forEach(b=> b.classList.add("disabled"));
+
+  if(opt.correct){
+    btn.classList.add("correct");
+    btn.innerHTML += ' <span class="mark">✓</span>';
+    currentModuleCorrect++;
+  } else {
+    btn.classList.add("wrong");
+    btn.innerHTML += ' <span class="mark">✕</span>';
+    // also reveal the correct one
+    const correctIdx = allOpts.findIndex(o=>o.correct);
+    buttons[correctIdx].classList.add("correct");
+    buttons[correctIdx].innerHTML += ' <span class="mark">✓</span>';
+  }
+
+  const fb = document.getElementById("qFeedback");
+  fb.className = "feedback show " + (opt.correct ? "ok" : "bad");
+  document.getElementById("fbTitle").textContent = opt.correct ? "Trafnie." : "Nie do końca.";
+  document.getElementById("fbBody").textContent = opt.note;
+
+  document.getElementById("nextBtn").className = "next-btn show";
+}
+
+document.getElementById("nextBtn").addEventListener("click", ()=>{
+  currentQIndex++;
+  if(currentQIndex >= currentModule.questions.length){
+    finishModule();
+  } else {
+    renderQuestion();
+  }
+});
+
+document.getElementById("backBtn").addEventListener("click", ()=>{
+  showScreen("home");
+  renderHome();
+});
+
+function finishModule(){
+  const total = currentModule.questions.length;
+  const score = currentModuleCorrect;
+  const prevBest = state.completed[currentModule.id] ? state.completed[currentModule.id].best : 0;
+  const isNewBest = score > prevBest;
+
+  // scoring into global total: only add the delta if it's a new best (avoid infinite farming)
+  if(isNewBest){
+    state.totalScore += (score - prevBest);
+  }
+  state.completed[currentModule.id] = { best: Math.max(score, prevBest), last: score };
+  saveState();
+
+  showScreen("result");
+
+  const pct = Math.round((score/total)*100);
+  let title, text, badge;
+  if(pct === 100){ title = "Perfekcyjnie."; text = "Znasz kartę i technikę na wylot. Tak trzymać na sali."; badge="🏆"; }
+  else if(pct >= 60){ title = "Solidnie."; text = "Dobry wynik — jeszcze jedna runda i będzie komplet."; badge="🍷"; }
+  else { title = "Jest nad czym pracować."; text = "Spróbuj jeszcze raz — powtórka to nie kara, to trening."; badge="🌱"; }
+
+  document.getElementById("resultBadge").textContent = badge;
+  document.getElementById("resultTitle").textContent = title;
+  document.getElementById("resultText").textContent = text;
+  document.getElementById("resScoreLabel").innerHTML = score + "<span>/" + total + " poprawnych</span>";
+
+  const waMsg = `🍷 Lipari Szkoła Sali — ukończono: "${currentModule.title}"\nWynik: ${score}/${total}${isNewBest ? " (nowy rekord!)" : ""}\nMój łączny wynik: ${state.totalScore} pkt`;
+  document.getElementById("waLine").textContent = waMsg;
+
+  document.getElementById("retryBtn").onclick = ()=> startModule(currentModule.id);
+  document.getElementById("homeBtn").onclick = ()=> { showScreen("home"); renderHome(); };
+  document.getElementById("copyResultBtn").onclick = ()=> copyText(waMsg, document.getElementById("copyResultBtn"));
+}
+
+/* ================== SCENARIO FLOW ================== */
+
+let currentScenario = null;
+let scenarioStepCount = 0;
+let scenarioMaxSteps = 3;
+let scenarioHistory = []; // track outcome quality of each decision along the way
+
+function startScenario(id){
+  currentScenario = SCENARIOS.find(s=>s.id===id);
+  scenarioStepCount = 0;
+  scenarioHistory = [];
+  showScreen("scenario");
+  renderScenarioScene(currentScenario.start);
+}
+
+function renderScenarioProgress(){
+  const track = document.getElementById("progressTrackScenario");
+  track.innerHTML = "";
+  for(let i=0;i<scenarioMaxSteps;i++){
+    const dot = document.createElement("div");
+    dot.className = "progress-dot";
+    if(i < scenarioStepCount) dot.classList.add("filled");
+    if(i === scenarioStepCount) dot.classList.add("current");
+    dot.innerHTML = "<i></i>";
+    track.appendChild(dot);
+  }
+}
+
+function renderScenarioScene(sceneId){
+  renderScenarioProgress();
+  const scene = currentScenario.scenes[sceneId];
+  const body = document.getElementById("scenarioBody");
+
+  let html = `
+    <div class="scenario-scene">
+      <div class="scene-label">${scene.label}</div>
+      <div class="scene-text">${scene.text}${scene.voice ? '<span class="voice">'+scene.voice+'</span>' : ''}</div>
+    </div>
+    <div class="scenario-choices" id="scChoices"></div>
+  `;
+  body.innerHTML = html;
+
+  const choicesEl = document.getElementById("scChoices");
+  scene.choices.forEach(choice=>{
+    const btn = document.createElement("button");
+    btn.className = "scenario-choice";
+    btn.textContent = choice.t;
+    btn.addEventListener("click", ()=> handleScenarioChoice(choice));
+    choicesEl.appendChild(btn);
+  });
+}
+
+function handleScenarioChoice(choice){
+  scenarioStepCount++;
+  if(choice.next){
+    renderScenarioScene(choice.next);
+  } else {
+    scenarioHistory.push(choice.outcome);
+    finishScenario(choice.outcome, choice.outcomeText);
+  }
+}
+
+function finishScenario(outcome, text){
+  renderScenarioProgress();
+  const body = document.getElementById("scenarioBody");
+
+  const meterClass = outcome === "great" ? "great" : outcome === "ok" ? "ok" : "poor";
+  const titleMap = { great: "Świetna decyzja.", ok: "Zadziałało, ale nie idealnie.", poor: "Warto to przemyśleć ponownie." };
+  const emojiMap = { great: "✅", ok: "⚠️", poor: "🔁" };
+
+  body.innerHTML = `
+    <div class="scenario-meter">
+      <div class="pip ${meterClass}"></div>
+      <div class="pip ${meterClass}"></div>
+      <div class="pip ${meterClass}"></div>
+    </div>
+    <div class="scenario-outcome ${meterClass}">
+      <strong>${emojiMap[outcome]} ${titleMap[outcome]}</strong>
+      ${text}
+    </div>
+    <button class="btn-primary" style="margin-top:22px;" id="scenarioRetry">Spróbuj inną ścieżkę</button>
+    <button class="btn-ghost" id="scenarioHome">Wróć do modułów</button>
+  `;
+
+  // save state — best outcome wins (great > ok > poor)
+  if(!state.completedScenarios) state.completedScenarios = {};
+  const rank = { great:3, ok:2, poor:1 };
+  const prev = state.completedScenarios[currentScenario.id];
+  const prevRank = prev ? rank[prev.best] : 0;
+  const isNewBest = rank[outcome] > prevRank;
+  if(isNewBest){
+    const bonus = outcome === "great" ? 3 : outcome === "ok" ? 1 : 0;
+    state.totalScore += bonus;
+    state.completedScenarios[currentScenario.id] = { best: outcome };
+  }
+  saveState();
+
+  document.getElementById("scenarioRetry").addEventListener("click", ()=> startScenario(currentScenario.id));
+  document.getElementById("scenarioHome").addEventListener("click", ()=> { showScreen("home"); renderHome(); });
+}
+
+document.getElementById("backBtnScenario").addEventListener("click", ()=>{
+  showScreen("home");
+  renderHome();
+});
+
+/* ================== SHARE / COPY ================== */
+
+document.getElementById("shareBtn").addEventListener("click", ()=>{
+  const doneCount = Object.keys(state.completed).length;
+  const msg = `🍷 Lipari Szkoła Sali — mój postęp\nUkończone moduły: ${doneCount}/${MODULES.length}\nŁączny wynik: ${state.totalScore} pkt`;
+  copyText(msg, document.getElementById("shareBtn"));
+});
+
+function copyText(text, btn){
+  const fallback = ()=>{
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).catch(fallback);
+  } else {
+    fallback();
+  }
+  const original = btn.textContent;
+  btn.textContent = "Skopiowano ✓";
+  setTimeout(()=> btn.textContent = original, 1800);
+}
+
+/* ================== SCREEN SWITCH ================== */
+
+function showScreen(name){
+  ["home","quiz","scenario","result"].forEach(s=>{
+    document.getElementById("screen-"+s).classList.toggle("hidden", s!==name);
+  });
+}
+
+/* ================== INIT ================== */
+renderHome();
+</script>
+
+</body>
+</html>
