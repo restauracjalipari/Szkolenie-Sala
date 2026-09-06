@@ -73,6 +73,17 @@
     align-items:center;
     gap:6px;
   }
+  .topbar-right{ display:flex; align-items:center; gap:8px; }
+  .cheat-btn{
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--card);
+    font-size:1rem;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
 
   /* ---------- SCREENS ---------- */
   .screen{ flex:1; display:flex; flex-direction:column; padding: 24px 22px 32px; }
@@ -412,6 +423,71 @@
   .scenario-meter .pip.great{ background: var(--basil); }
   .scenario-meter .pip.ok{ background: var(--gold); }
   .scenario-meter .pip.poor{ background: var(--wine); }
+
+  /* ---------- CHEATSHEET SCREEN ---------- */
+  .cheat-title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:1.3rem;
+    color:var(--wine);
+  }
+  .cheat-section{ margin-bottom:22px; }
+  .cheat-section h4{
+    font-family:'Fraunces', serif;
+    font-size:1rem;
+    color:var(--wine);
+    border-bottom:1.5px solid var(--gold);
+    padding-bottom:6px;
+    margin-bottom:10px;
+  }
+  .cheat-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.82rem;
+  }
+  .cheat-table td{
+    padding:8px 6px;
+    border-bottom:1px solid var(--line);
+    line-height:1.35;
+  }
+  .cheat-table td:first-child{ color:var(--ink); font-weight:600; padding-right:10px; }
+  .cheat-table td:last-child{ color:var(--wine); text-align:right; font-weight:600; }
+  .cheat-phrase{
+    background:var(--card);
+    border-left:3px solid var(--gold);
+    padding:9px 12px;
+    margin-bottom:8px;
+    font-size:0.85rem;
+    font-style:italic;
+    line-height:1.4;
+    border-radius:4px;
+  }
+  .cheat-obj{ margin-bottom:10px; font-size:0.85rem; line-height:1.4; }
+  .cheat-obj .q{ display:block; font-weight:700; color:var(--wine-dark); font-style:italic; }
+  .cheat-obj .a{ display:block; margin-top:2px; }
+  .cheat-obj .a::before{ content:"→ "; color:var(--basil); font-weight:700; }
+  .cheat-golden{
+    background:var(--ink);
+    color:var(--cream);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:20px;
+  }
+  .cheat-golden .cg-title{
+    font-family:'Manrope',sans-serif;
+    font-size:0.68rem;
+    font-weight:800;
+    letter-spacing:0.08em;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .cheat-golden .cg-rule{
+    font-size:0.85rem;
+    font-style:italic;
+    line-height:1.45;
+    margin-bottom:8px;
+  }
+  .cheat-golden .cg-rule:last-child{ margin-bottom:0; }
 </style>
 </head>
 <body>
@@ -420,7 +496,10 @@
 
   <div class="topbar">
     <div class="brand">Lipari<span>SZKOŁA SALI</span></div>
-    <div class="streak" id="totalScoreBadge">🏆 <span id="totalScoreNum">0</span> pkt</div>
+    <div class="topbar-right">
+      <button class="cheat-btn" id="openCheatBtn" title="Ściąga">📋</button>
+      <div class="streak" id="totalScoreBadge">🏆 <span id="totalScoreNum">0</span> pkt</div>
+    </div>
   </div>
 
   <!-- HOME SCREEN -->
@@ -470,6 +549,94 @@
     </div>
     <div class="scenario-badge">🎭 SCENARIUSZ NA SALI</div>
     <div id="scenarioBody"></div>
+  </div>
+
+  <!-- CHEATSHEET SCREEN -->
+  <div class="screen hidden" id="screen-cheat">
+    <div class="quiz-head">
+      <button class="back-btn" id="backBtnCheat">←</button>
+      <div class="cheat-title">Ściąga</div>
+    </div>
+
+    <div class="cheat-section">
+      <h4>Parowanie: danie → napój</h4>
+      <table class="cheat-table">
+        <tr><td>Tagliere Salumi e Formaggi</td><td>Vitese Nero D'Avola</td></tr>
+        <tr><td>Frutti di Mare / owoce morza</td><td>Prosecco Rose Afra</td></tr>
+        <tr><td>Pizza Salami Piccante (ostra)</td><td>Radler malina-borówka</td></tr>
+        <tr><td>Risotto con Gamberi</td><td>Vitese Sauvignon Blanc</td></tr>
+        <tr><td>Merluzzo alla Ghiotta (dorsz)</td><td>Vitese Grillo</td></tr>
+        <tr><td>Saltimbocca (indyk, maślany sos)</td><td>Vitese Sauvignon Blanc</td></tr>
+        <tr><td>Risotto di Coniglio (królik)</td><td>Kore Zibbibo</td></tr>
+        <tr><td>Cannoli / deser sycylijski</td><td>Espresso lub Limoncello</td></tr>
+        <tr><td>Cassata al Forno (sernik)</td><td>Prosecco Treviso</td></tr>
+        <tr><td>Okazja specjalna (rocznica, urodziny)</td><td>Pornstar Martini</td></tr>
+      </table>
+    </div>
+
+    <div class="cheat-section">
+      <h4>Koktajle — szybka ściąga</h4>
+      <table class="cheat-table">
+        <tr><td>Lekkie, kwiatowe na aperitivo</td><td>Hugo</td></tr>
+        <tr><td>Coś jak Aperol, ale mocniejsze</td><td>Americano</td></tr>
+        <tr><td>Wytrawne, bez słodyczy</td><td>Americano / Negroni Sbagliato</td></tr>
+        <tr><td>Orzeźwiające, z miętą</td><td>Mojito / Hugo</td></tr>
+        <tr><td>Proste, dwuskładnikowe</td><td>Garibaldi</td></tr>
+        <tr><td>Na bazie Prosecco</td><td>Sicilian Spritz / Bellini / Rossini</td></tr>
+      </table>
+    </div>
+
+    <div class="cheat-section">
+      <h4>Attached selling — małe dodatki</h4>
+      <div class="cheat-phrase">Do pizzy: "Coś na start, żeby nie czekać w ciszy? Fritto Misto jest szybkie."</div>
+      <div class="cheat-phrase">Do deski serów: "Dorzucić grissini albo miód do sera?"</div>
+      <div class="cheat-phrase">Do Cannoli: "Do tego świetnie pasuje espresso — dorzucić?"</div>
+      <div class="cheat-phrase">Duży stolik pod presją czasu: karafka wina + Focaccia na start.</div>
+    </div>
+
+    <div class="cheat-section">
+      <h4>Otwarcia i pytania (mów tak)</h4>
+      <div class="cheat-phrase">"Zacznijmy od czegoś na aperitivo — Aperol Spritz czy lampka Prosecco?"</div>
+      <div class="cheat-phrase">"Do tego dania świetnie pasuje [nazwa wina] — nalać kieliszek?"</div>
+      <div class="cheat-phrase">"Co by Pan/Pani powiedział/a na coś na start, np. Focaccia?"</div>
+      <div class="cheat-phrase">"Podsumowując: [zamówienie]. Do tego może kieliszek [wino] na start?"</div>
+      <div class="cheat-phrase">Przy deserze: zaraz po zebraniu talerzy, zanim gość pomyśli o rachunku.</div>
+    </div>
+
+    <div class="cheat-section">
+      <h4>Obsługa "nie, dziękuję"</h4>
+      <div class="cheat-obj">
+        <span class="q">"Tylko główne danie, dziękuję"</span>
+        <span class="a">Przyjmij spokojnie, wróć z propozycją przy deserze.</span>
+      </div>
+      <div class="cheat-obj">
+        <span class="q">"Jestem najedzony/a"</span>
+        <span class="a">Zaproponuj coś małego — espresso, nie duży deser.</span>
+      </div>
+      <div class="cheat-obj">
+        <span class="q">"To trochę drogie"</span>
+        <span class="a">Krótko uzasadnij wartość + pokaż tańszą alternatywę.</span>
+      </div>
+      <div class="cheat-obj">
+        <span class="q">"Może innym razem"</span>
+        <span class="a">To uprzejme "nie" — nie naciskaj, podziękuj i zostaw temat.</span>
+      </div>
+      <div class="cheat-obj">
+        <span class="q">Gość się waha przy karcie win</span>
+        <span class="a">Podaj jedną, konkretną rekomendację zamiast czekać.</span>
+      </div>
+      <div class="cheat-obj">
+        <span class="q">Gość wygląda na wypitego</span>
+        <span class="a">Zaproponuj delikatnie wodę/coś lekkiego, bez oceniania.</span>
+      </div>
+    </div>
+
+    <div class="cheat-golden">
+      <div class="cg-title">ZŁOTE ZASADY</div>
+      <div class="cg-rule">Nie sprzedajemy. Pomagamy gościu zjeść lepiej, niż wybrałby sam.</div>
+      <div class="cg-rule">Jedno "nie" to nie porażka — wróć w innym, dobrym momencie.</div>
+      <div class="cg-rule">Zawsze konkretna nazwa, nigdy "coś do picia?"</div>
+    </div>
   </div>
 
   <!-- RESULT SCREEN -->
@@ -2183,10 +2350,18 @@ function copyText(text, btn){
 /* ================== SCREEN SWITCH ================== */
 
 function showScreen(name){
-  ["home","quiz","scenario","result"].forEach(s=>{
+  ["home","quiz","scenario","cheat","result"].forEach(s=>{
     document.getElementById("screen-"+s).classList.toggle("hidden", s!==name);
   });
 }
+
+document.getElementById("openCheatBtn").addEventListener("click", ()=>{
+  showScreen("cheat");
+});
+document.getElementById("backBtnCheat").addEventListener("click", ()=>{
+  showScreen("home");
+  renderHome();
+});
 
 /* ================== INIT ================== */
 renderHome();
